@@ -1,0 +1,46 @@
+{
+  "default": {
+    "deployment": {
+      "host": "localhost",
+      "port": 8545,
+      "type": "rpc"
+    },
+    "dappConnection": [
+      "$WEB3",
+      "http://localhost:8545"
+    ],
+    "gas": "auto",
+    "contracts": {
+      "Ticket721": {
+	"deploy": false
+      },
+      "Ticket721Train": {
+	"deploy": false
+      },
+      "Ticket721VerifiedAccounts": {
+	"deploy": false
+      },
+      "Migrations": {
+	"deploy": false
+      },
+      "Ticket721TestReceiver": {
+	"deploy": false
+      },
+      "ERC721Holder": {
+	"deploy": false
+      },
+      "strings": {
+	"deploy": false
+      },
+      "AddressUtils": {
+	"deploy": false
+      },
+      "SafeMath": {
+	"deploy": false
+      },
+      "Ownable": {
+	"deploy": false
+      }
+    }
+  }
+}
