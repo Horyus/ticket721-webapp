@@ -31,5 +31,23 @@
       }
     },
     "name": "development"
+  },
+  "0xe823d6a7bbbe801ffa7144ed5f0d81aa8251e324ddd5b52adc799f0aeabdcaa3": {
+    "contracts": {
+      "0x2af9988c7864e93d91d02747ecc6230203cfc9b5013454c8137adf09ac13dfb0": {
+        "name": "Ticket721HUB",
+        "address": "0xD72bF69ef58467B7fe2b833A3850430b15a46B3a"
+      }
+    },
+    "name": "development"
+  },
+  "0x924797cb4f0b76f31ae99698e6de9a22cc7a18cba483935250af116e850b383a": {
+    "contracts": {
+      "0x2af9988c7864e93d91d02747ecc6230203cfc9b5013454c8137adf09ac13dfb0": {
+        "name": "Ticket721HUB",
+        "address": "0xBB953a851D215191FfD2Bc481E191a0Ac7a83372"
+      }
+    },
+    "name": "development"
   }
 }
