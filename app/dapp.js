@@ -18,6 +18,7 @@ import './css/open-sans.css';
 import './css/oswald.css';
 import './css/pure-min.css';
 import {ManifestLoader} from "./components/manifest_loader";
+import {Loader} from "./components/loader";
 
 class App extends React.Component {
 
@@ -58,7 +59,7 @@ class App extends React.Component {
                     </FeedNotifications>
                 </VortexWeb3Loaded>
                 <VortexWeb3Loading>
-                    Loading
+                    <Loader/>
                 </VortexWeb3Loading>
                 <VortexWeb3NetworkError>
                     Salot
