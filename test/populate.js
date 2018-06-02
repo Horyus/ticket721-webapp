@@ -105,6 +105,137 @@ describe("Register Accounts as verified users", () => {
         }
     });
 
+    it("Should run a Sale as #2", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("UltraTek", "T721UTT2018", 200000, 2500, "INFOS").estimateGas({from: accounts[1]});
+            await Ticket721HUB.methods.runSale("UltraTek", "T721UTT2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[1],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[1], 2).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Javascript Summit", "T721JSS2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Javascript Summit", "T721JSS2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 0).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 1).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Baseball Cup 2k18", "T721BBC2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Baseball Cup 2k18", "T721BBC2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 2).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 3).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 4).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 5).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 6).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+    it("Should run a Sale as #3", async (done) => {
+        try {
+            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
+            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
+                from: accounts[2],
+                gas: gas * 2
+            });
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 7).call();
+            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
+            done();
+        } catch (e) {
+            done(e);
+        }
+    });
+
     it("Save manifest", async (done) => {
         Fs.writeFileSync("./manifest.json", JSON.stringify(manifest));
         done();
