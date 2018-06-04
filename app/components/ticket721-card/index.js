@@ -1,29 +1,50 @@
 import React from 'react';
-import {Card, Divider} from 'antd';
+import {Card} from 'antd';
 import {connect} from 'vort_x-components';
+import {IPFSLoad} from 'vort_x';
 import './index.css';
 import Web3Utils from 'web3-utils';
+import Lottie from 'react-lottie';
+import * as Options from './animation.json';
 
 class _Ticket721Card extends React.Component {
+    constructor(props) {
+        super(props);
+        this.fetched = false;
+    }
+
     render() {
-        this.sale_name = this.props.name;
-        if (this.props.fiat.USD) {
-            return (<Card bordered={false} cover={<img alt="example"
-                                                       src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}
-                          style={{
-                              width: 300,
-                              height: 300,
-                              marginLeft: 15,
-                              marginRight: 15,
-                              marginTop: 15,
-                              marginBottom: 15
-                          }} className="card">
-                <h2 className="card_title">{this.props.name}</h2>
-                <h2 className="card_price"><span className="number_text">{Web3Utils.fromWei(new Web3Utils.BN(this.props.price), 'ether')}</span> Ξ <Divider type="vertical"/><span className="number_text">{(parseFloat(Web3Utils.fromWei(new Web3Utils.BN(this.props.price), 'ether')) * this.props.fiat.USD).toFixed(2)}</span> $</h2>
-            </Card>);
+        if (!this.fetched && this.props.infos) {
+            this.props.IPFSLoad(this.props.infos);
+            this.fetched = true;
+        }
+        if (this.props.recovered_infos) {
+            try {
+                console.log(this.props.price);
+                const parsed = JSON.parse(this.props.recovered_infos.content.toString());
+                this.image_source = "https://gateway.ipfs.io/ipfs/" + parsed.image;
+                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source}/>}
+                              style={{
+                                  width: 300,
+                                  height: 300,
+                                  marginLeft: 15,
+                                  marginRight: 15,
+                                  marginTop: 15,
+                                  marginBottom: 15
+                              }} className="card">
+                    <h2 className="card_title">{this.props.name}</h2>
+                    <h2 className="card_price"><span className="number_text">{Web3Utils.fromWei(new Web3Utils.BN(this.props.price), 'ether')}</span> Ξ</h2>
+                </Card>);
+            } catch (e) {
+                return (<div/>);
+            }
         } else {
-            return (<Card bordered={false} cover={<img alt="example"
-                                                       src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}
+            const lottieOptions = {
+                loop: true,
+                autoplay: true,
+                animationData: Options
+            };
+            return (<Card bordered={false}
                           style={{
                               width: 300,
                               height: 300,
@@ -32,9 +53,12 @@ class _Ticket721Card extends React.Component {
                               marginTop: 15,
                               marginBottom: 15
                           }} className="card">
-                <h2 className="card_title">{this.props.name}</h2>
-                <h2 className="card_price"><span className="number_text">{Web3Utils.fromWei(new Web3Utils.BN(this.props.price), 'ether')}</span> Ξ</h2>
+                <Lottie
+                    options={lottieOptions}
+                />
+
             </Card>);
+
         }
     }
 }
@@ -47,6 +71,8 @@ const mapStateToProps = (state, ownProps) => {
             instance: state.contracts.Ticket721[ownProps.address].instance,
             name: state.contracts.Ticket721[ownProps.address].instance.vortex.name.vortexData({}),
             price: state.contracts.Ticket721[ownProps.address].instance.vortex.getDefaultTicketPrice.vortexData({}),
+            infos: state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData({}),
+            recovered_infos: state.ipfs[state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData()]
         };
     } else {
         return {
@@ -56,4 +82,10 @@ const mapStateToProps = (state, ownProps) => {
     }
 };
 
-export const Ticket721Card = connect(_Ticket721Card, mapStateToProps);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        IPFSLoad: (hash) => dispatch(IPFSLoad(hash)),
+    }
+};
+
+export const Ticket721Card = connect(_Ticket721Card, mapStateToProps, mapDispatchToProps);

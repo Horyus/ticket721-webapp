@@ -20,6 +20,8 @@ import './css/pure-min.css';
 import {ManifestLoader} from "./components/manifest_loader";
 import {Loader} from "./components/loader";
 
+import './dapp.css';
+
 class App extends React.Component {
 
     constructor(props) {
@@ -62,10 +64,10 @@ class App extends React.Component {
                     <Loader/>
                 </VortexWeb3Loading>
                 <VortexWeb3NetworkError>
-                    Salot
+                    <h2 className="error_msg">You are on the wrong Ethereum Network 🛰</h2>
                 </VortexWeb3NetworkError>
                 <VortexWeb3LoadError>
-                    Salut
+                    <h2 className="error_msg">An Error occured when we tried to recover Web3 🙁</h2>
                 </VortexWeb3LoadError>
             </VortexGate>
         );

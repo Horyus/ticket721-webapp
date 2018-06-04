@@ -43,15 +43,15 @@ class _SaleLister extends React.Component {
     render() {
         return (<div>
             <Row gutter={16}>
-                <h3 className="section_title">hot</h3>
+                <h3 className="section_title">hot 🔥</h3>
                 {this.node_array.hot}
             </Row>
             <Row gutter={16}>
-                <h3 className="section_title">new</h3>
+                <h3 className="section_title">new ✨</h3>
                 {this.node_array.new}
             </Row>
             <Row gutter={16}>
-                <h3 className="section_title">soon</h3>
+                <h3 className="section_title">soon 🕣</h3>
                 {this.node_array.soon}
                 {this.node_array.none}
             </Row>
