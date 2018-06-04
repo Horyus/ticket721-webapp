@@ -1,5 +1,4 @@
 import * as React from "react";
-import NotificationSystem from "react-notification-system";
 import {connect} from 'vort_x-components';
 import { notification } from 'antd'
 
@@ -25,6 +24,9 @@ class _FeedNotifications extends React.Component {
                         break ;
                     case 'NEW_TRANSACTION':
                         notification.open({message: 'New Transaction Broadcasted', description: nextProps.feed[start_idx].transaction_hash});
+                        break ;
+                    case 'NEW_IPFS_CONTENT':
+                        notification.open({message: 'New IPFS Content', description: nextProps.feed[start_idx].ipfs_hash});
                         break ;
                     default:
                         break ;

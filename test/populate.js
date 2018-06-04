@@ -27,6 +27,9 @@ config({
     node: "http://localhost:8545"
 });
 
+const ipfsAPI = require('ipfs-api');
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
+
 const Ticket721HUBInfos = require("../dist/contracts/Ticket721HUB.json");
 const Ticket721VerifiedAccountsInfos = require("../dist/contracts/Ticket721VerifiedAccounts");
 const _Web3 = require("web3");
@@ -43,7 +46,6 @@ let manifest = [];
 describe("Register Accounts as verified users", () => {
 
     it("Loads Ticket721HUB", async (done) => {
-        console.log(Ticket721HUBInfos.address);
         Ticket721HUB = new Web3.eth.Contract(Ticket721HUBInfos.abi, Ticket721HUBInfos.address);
         Ticket721HUB.setProvider(Web3.currentProvider);
 
@@ -52,7 +54,7 @@ describe("Register Accounts as verified users", () => {
 
         accounts = await Web3.eth.getAccounts();
         done();
-    });
+    }, 50000);
 
     it("Add account #2 as verified identity", async (done) => {
         try {
@@ -75,166 +77,36 @@ describe("Register Accounts as verified users", () => {
         }
     });
 
-    it("Should run a Sale as #2", async (done) => {
+    const runSale = async (id, account, idx, status, done) => {
         try {
-            const gas = await Ticket721HUB.methods.runSale("UltraRock 2018", "T721UTR2018", 200000, 2500, "INFOS").estimateGas({from: accounts[1]});
-            await Ticket721HUB.methods.runSale("UltraRock 2018", "T721UTR2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[1],
+            const config = require("./" + id + "/infos.json");
+            const image = Fs.readFileSync("./test/" + id + "/" + config.image);
+            const ipfs_image = (await ipfs.files.add(image))[0].hash;
+            console.log(ipfs_image);
+            const deploy = new Buffer(JSON.stringify({
+                ...config,
+                image: ipfs_image,
+            }, null, 4));
+            const infos = (await ipfs.files.add(deploy))[0].hash;
+            console.log(infos);
+            console.log(config);
+            const gas = await Ticket721HUB.methods.runSale(config.title, id, new Web3.utils.BN(config.price), config.cap, infos).estimateGas({from: accounts[account]});
+            await Ticket721HUB.methods.runSale(config.title, id, new Web3.utils.BN(config.price), config.cap, infos).send({
+                from: accounts[account],
                 gas: gas * 2
             });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[1], 0).call();
-            manifest.push({address: ret.ticket721, status: 'new'});
+            const ret = await Ticket721HUB.methods.sale_ownership(accounts[account], idx).call();
+            manifest.push({address: ret, status: status});
             done();
         } catch (e) {
             done(e);
         }
-    });
+    };
 
-    it("Should run a Sale as #2", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("ElectroRide 2018", "T721ETR2018", 200000, 2500, "INFOS").estimateGas({from: accounts[1]});
-            await Ticket721HUB.methods.runSale("ElectroRide 2018", "T721ETR2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[1],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[1], 1).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
+    it("Should run a Sale as #2", runSale.bind(null, "T721UTR2018", 1, 0, 'new')).timeout(50000);
+    it("Should run a Sale as #2", runSale.bind(null, "T721ETR2018", 1, 1, 'hot')).timeout(50000);
+    it("Should run a Sale as #2", runSale.bind(null, "T721UTT", 1, 2, 'soon')).timeout(50000);
 
-    it("Should run a Sale as #2", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("UltraTek", "T721UTT2018", 200000, 2500, "INFOS").estimateGas({from: accounts[1]});
-            await Ticket721HUB.methods.runSale("UltraTek", "T721UTT2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[1],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[1], 2).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Javascript Summit", "T721JSS2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Javascript Summit", "T721JSS2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 0).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 1).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Baseball Cup 2k18", "T721BBC2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Baseball Cup 2k18", "T721BBC2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 2).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 3).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 4).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 5).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 6).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
-    it("Should run a Sale as #3", async (done) => {
-        try {
-            const gas = await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", 200000, 2500, "INFOS").estimateGas({from: accounts[2]});
-            await Ticket721HUB.methods.runSale("Nice Event", "T721NE2018", new Web3.utils.BN("100000000000000000"), 2500, "INFOS").send({
-                from: accounts[2],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[2], 7).call();
-            manifest.push({address: ret.ticket721.toLowerCase(), status: 'hot'});
-            done();
-        } catch (e) {
-            done(e);
-        }
-    });
 
     it("Save manifest", async (done) => {
         Fs.writeFileSync("./manifest.json", JSON.stringify(manifest));

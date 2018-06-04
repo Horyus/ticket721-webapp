@@ -11,8 +11,9 @@
 
 .card_title {
     font-family: "Roboto", sans-serif;
-    font-weight: 100;
+    font-weight: 300;
     text-align: center;
+    font-size: 23px;
 }
 
 .card_price {
