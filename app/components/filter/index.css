@@ -1,0 +1,23 @@
+.main_input {
+    border: none;
+    border-bottom: 1px solid black;
+    background-color: none;
+    outline: 0;
+    font-size: 40px;
+    width: 25%;
+    height: 50px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    margin-bottom: 30px;
+}
+
+.main_input:focus {
+    border: none;
+    border-bottom: 1px solid black;
+    background-color: none;
+    outline: 0;
+}
+
+input:focus::-webkit-input-placeholder {
+    opacity: 0;
+}
