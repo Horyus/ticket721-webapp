@@ -105,7 +105,8 @@ describe("Register Accounts as verified users", () => {
 
     it("Should run a Sale as #2", runSale.bind(null, "T721UTR2018", 1, 0, 'new')).timeout(50000);
     it("Should run a Sale as #2", runSale.bind(null, "T721ETR2018", 1, 1, 'hot')).timeout(50000);
-    it("Should run a Sale as #2", runSale.bind(null, "T721UTT", 1, 2, 'soon')).timeout(50000);
+    it("Should run a Sale as #2", runSale.bind(null, "T721ETR2019", 1, 2, 'hot')).timeout(50000);
+    it("Should run a Sale as #2", runSale.bind(null, "T721UTT", 1, 3, 'soon')).timeout(50000);
 
 
     it("Save manifest", async (done) => {

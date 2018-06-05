@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "test": "embark test",
-    "start": "embark run --nodashboard"
+    "start": "embark run --nodashboard",
+    "setup": "embark build && embark test && embark run --nodashboard"
   },
   "author": "",
   "license": "ISC",
