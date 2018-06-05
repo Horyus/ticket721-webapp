@@ -11,6 +11,8 @@ class _Ticket721Card extends React.Component {
     constructor(props) {
         super(props);
         this.fetched = false;
+        this.named = false;
+        this.symboled = false;
     }
 
     render() {
@@ -18,9 +20,16 @@ class _Ticket721Card extends React.Component {
             this.props.IPFSLoad(this.props.infos);
             this.fetched = true;
         }
+        if (!this.named && this.props.name) {
+            this.props.onUpdate(this.props._key, this.props.name, this.props.symbol);
+            this.named = true;
+        }
+        if (!this.symboled && this.props.symbol) {
+            this.props.onUpdate(this.props._key, this.props.name, this.props.symbol);
+            this.symboled = true;
+        }
         if (this.props.recovered_infos) {
             try {
-                console.log(this.props.price);
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
                 this.image_source = "https://gateway.ipfs.io/ipfs/" + parsed.image;
                 return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source}/>}
@@ -66,18 +75,17 @@ class _Ticket721Card extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     if (state.contracts.Ticket721[ownProps.address]) {
         return {
-            fiat: ownProps.fiat,
-            address: ownProps.address,
+            ...ownProps,
             instance: state.contracts.Ticket721[ownProps.address].instance,
             name: state.contracts.Ticket721[ownProps.address].instance.vortex.name.vortexData({}),
+            symbol: state.contracts.Ticket721[ownProps.address].instance.vortex.symbol.vortexData({}),
             price: state.contracts.Ticket721[ownProps.address].instance.vortex.getDefaultTicketPrice.vortexData({}),
             infos: state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData({}),
             recovered_infos: state.ipfs[state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData()]
         };
     } else {
         return {
-            fiat: ownProps.fiat,
-            address: ownProps.address
+            ...ownProps
         }
     }
 };

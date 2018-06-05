@@ -19,6 +19,7 @@ import './css/oswald.css';
 import './css/pure-min.css';
 import {ManifestLoader} from "./components/manifest_loader";
 import {Loader} from "./components/loader";
+import {search} from "./redux/search/search.reducers";
 
 import './dapp.css';
 
@@ -26,11 +27,13 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
+        this.initialState = {
+            search: ""
+        };
+        this.reducers = {
+            search
+        };
     }
-
-    componentDidMount(){
-    }
-
 
     render(){
         return (
@@ -46,6 +49,10 @@ class App extends React.Component {
                 }}
 
                 loader={VortexMetamaskLoader(Web3)}
+
+                reducers_map={this.reducers}
+
+                custom_state={this.initialState}
 
             >
                 <VortexWeb3Loaded>
