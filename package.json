@@ -15,8 +15,10 @@
     "babel-loader": "^7.1.4",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-react-app": "^3.1.1",
     "babel-preset-stage-2": "^6.24.1",
     "embark": "^3.0.9",
+    "fuzzy": "^0.1.3",
     "get-eth-price": "^1.0.0",
     "ipfs-api": "^22.0.1",
     "react": "^16.4.0",
@@ -30,5 +32,10 @@
     "web3-utils": "^1.0.0-beta.34",
     "webpack": "^4.10.2",
     "webpack-dev-server": "^3.1.4"
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
   }
 }
