@@ -73,15 +73,14 @@ class _Ticket721Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (state.contracts.Ticket721[ownProps.address]) {
+    if (state.contracts.Ticket721Event[ownProps.address]) {
         return {
             ...ownProps,
-            instance: state.contracts.Ticket721[ownProps.address].instance,
-            name: state.contracts.Ticket721[ownProps.address].instance.vortex.name.vortexData({}),
-            symbol: state.contracts.Ticket721[ownProps.address].instance.vortex.symbol.vortexData({}),
-            price: state.contracts.Ticket721[ownProps.address].instance.vortex.getDefaultTicketPrice.vortexData({}),
-            infos: state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData({}),
-            recovered_infos: state.ipfs[state.contracts.Ticket721[ownProps.address].instance.vortex.infos.vortexData()]
+            instance: state.contracts.Ticket721Event[ownProps.address].instance,
+            name: state.contracts.Ticket721Event[ownProps.address].instance.vortex.name.vortexData({}),
+            price: state.contracts.Ticket721Event[ownProps.address].instance.vortex.getMintPrice.vortexData({}),
+            infos: state.contracts.Ticket721Event[ownProps.address].instance.vortex.getData.vortexData({}),
+            recovered_infos: state.ipfs[state.contracts.Ticket721Event[ownProps.address].instance.vortex.getData.vortexData()]
         };
     } else {
         return {
