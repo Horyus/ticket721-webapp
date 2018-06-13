@@ -15,13 +15,14 @@
     "account": {
       "password": "config/development/password"
     },
-    "targetGasLimit": 8000000,
+    "gasLimit": 90000000,
     "wsOrigins": "auto",
     "wsRPC": true,
     "wsHost": "localhost",
     "wsPort": 8546,
     "simulatorMnemonic": "cross uniform panic climb universe awful surprise list dutch ability label cat",
-    "simulatorBlocktime": 0
+    "simulatorBlocktime": 0,
+    "simulatorGasLimit": 90000000
   },
   "testnet": {
     "enabled": true,
@@ -29,6 +30,7 @@
     "light": true,
     "rpcHost": "localhost",
     "rpcPort": 8545,
+    "targetGasLimit": 90000000,
     "rpcCorsDomain": "http://localhost:8000",
     "account": {
       "password": "config/testnet/password"

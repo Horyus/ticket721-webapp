@@ -38,7 +38,7 @@ class _SaleLister extends React.Component {
     shouldComponentUpdate(nextProps) {
         let ret = false;
         for (; this.feed_size < nextProps.feed.length; ++this.feed_size) {
-            if (nextProps.feed[this.feed_size].contract_name === 'Ticket721') {
+            if (nextProps.feed[this.feed_size].contract_name === 'Ticket721Event') {
                 for (let manifest_idx = 0; manifest_idx < this.props.manifest.length; ++manifest_idx) {
                     if (this.props.manifest[manifest_idx].address.toLowerCase() === nextProps.feed[this.feed_size].contract_address.toLowerCase()) {
                         const ticket721Card = <Ticket721Card address={nextProps.feed[this.feed_size].contract_address.toLowerCase()} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
@@ -60,7 +60,7 @@ class _SaleLister extends React.Component {
     }
 
     filter(elem) {
-        return (Fuzzy.test(this.props.search, this.children_infos[elem.key].name) || Fuzzy.test(this.props.search, this.children_infos[elem.key].symbol));
+        return (Fuzzy.test(this.props.search, this.children_infos[elem.key].name));
     }
 
     render() {

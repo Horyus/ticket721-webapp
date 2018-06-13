@@ -11,36 +11,55 @@
     ],
     "gas": "auto",
     "contracts": {
-      "Ticket721": {
-	"deploy": false
-      },
-      "Ticket721Train": {
-	"deploy": false
-      },
       "Ticket721VerifiedAccounts": {
-	"deploy": false
+        "deploy": false
+      },
+      "Ticket721Event": {
+        "deploy": false
+      },
+      "Ticket721Hub": {
+      },
+      "Ticket721Public": {
+        "instanceOf": "Ticket721",
+        "args": [
+          "Ticket721 Public Registry",
+          "T721P",
+          false
+        ]
+      },
+      "Ticket721": {
+        "args": [
+          "Ticket721 Registry",
+          "T721",
+          true
+        ]
       },
       "Migrations": {
-	"deploy": false
+        "deploy": false
       },
       "Ticket721TestReceiver": {
-	"deploy": false
+        "deploy": false
       },
       "ERC721Holder": {
-	"deploy": false
+        "deploy": false
       },
       "strings": {
-	"deploy": false
+        "deploy": false
       },
       "AddressUtils": {
-	"deploy": false
+        "deploy": false
       },
       "SafeMath": {
-	"deploy": false
+        "deploy": false
       },
       "Ownable": {
-	"deploy": false
+        "deploy": false
       }
-    }
+    },
+    "afterDeploy": [
+      "Ticket721.methods.setHub(\"$Ticket721Hub\").send()",
+      "Ticket721Hub.methods.addPublicRegistry(\"$Ticket721Public\").send()",
+      "Ticket721Hub.methods.addVerifiedRegistry(\"$Ticket721\").send()"
+    ]
   }
 }

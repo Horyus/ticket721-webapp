@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom';
 //import EmbarkJS from 'Embark/EmbarkJS';
 import * as Chains from '../chains.json';
 import Ticket721 from 'Embark/contracts/Ticket721';
-import Ticket721HUB from 'Embark/contracts/Ticket721HUB';
+import Ticket721Hub from 'Embark/contracts/Ticket721Hub';
+import Ticket721Event from 'Embark/contracts/Ticket721Event';
 import {FeedNotifications} from "./components/feed-notifications";
-import {VortexGate, VortexWeb3Loading, VortexWeb3Loaded, VortexWeb3LoadError, VortexWeb3NetworkError, VortexMetamaskLoader} from 'vort_x-components';
+import {VortexGate, VortexWeb3Loading, VortexWeb3Loaded, VortexWeb3LoadError, VortexWeb3NetworkError, VortexWeb3Locked, VortexMetamaskLoader} from 'vort_x-components';
 import Web3 from 'web3';
 import * as Manifest from '../manifest.json';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
@@ -40,12 +41,13 @@ class App extends React.Component {
             <VortexGate
                 contracts={{
                     type: 'embark',
-                    contracts: {
+                    embark_contracts: {
                         Ticket721: Ticket721,
-                        Ticket721HUB: Ticket721HUB
+                        Ticket721Hub: Ticket721Hub,
+                        Ticket721Event: Ticket721Event
                     },
                     chains: Chains,
-                    preloaded_contracts: ["Ticket721HUB"]
+                    preloaded_contracts: ["Ticket721Hub", "Ticket721"]
                 }}
 
                 loader={VortexMetamaskLoader(Web3)}
@@ -76,6 +78,9 @@ class App extends React.Component {
                 <VortexWeb3LoadError>
                     <h2 className="error_msg">An Error occured when we tried to recover Web3 🙁</h2>
                 </VortexWeb3LoadError>
+                <VortexWeb3Locked>
+                    <h2 className="error_msg">Psst. Looks like someone forgot to unlock its wallet provider ! 🔐🦊</h2>
+                </VortexWeb3Locked>
             </VortexGate>
         );
     }

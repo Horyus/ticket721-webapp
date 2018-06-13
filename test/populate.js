@@ -30,8 +30,10 @@ config({
 const ipfsAPI = require('ipfs-api');
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
 
-const Ticket721HUBInfos = require("../dist/contracts/Ticket721HUB.json");
+const Ticket721HUBInfos = require("../dist/contracts/Ticket721Hub.json");
 const Ticket721VerifiedAccountsInfos = require("../dist/contracts/Ticket721VerifiedAccounts");
+const Ticket721Event = require("../dist/contracts/Ticket721Event");
+const Ticket721 = require("../dist/contracts/Ticket721");
 const _Web3 = require("web3");
 const Web3 = new _Web3(new _Web3.providers.HttpProvider("http://localhost:8545"));
 
@@ -39,6 +41,8 @@ const Fs = require("fs");
 
 let Ticket721HUB;
 let Ticket721VerifiedAccounts;
+let Ticket721Verified;
+let Ticket721VerifiedAddress;
 let accounts;
 
 let manifest = [];
@@ -53,6 +57,10 @@ describe("Register Accounts as verified users", () => {
         Ticket721VerifiedAccounts  = new Web3.eth.Contract(Ticket721VerifiedAccountsInfos.abi, AccountManagerAddress);
 
         accounts = await Web3.eth.getAccounts();
+
+        Ticket721VerifiedAddress = await Ticket721HUB.methods.verified_ticket_registries(0).call({from: accounts[0]});
+        Ticket721Verified = new Web3.eth.Contract(Ticket721.abi, Ticket721VerifiedAddress);
+
         done();
     }, 50000);
 
@@ -77,36 +85,70 @@ describe("Register Accounts as verified users", () => {
         }
     });
 
-    const runSale = async (id, account, idx, status, done) => {
+    const runSale = (id, account, idx, status, done) => {
         try {
             const config = require("./" + id + "/infos.json");
             const image = Fs.readFileSync("./test/" + id + "/" + config.image);
-            const ipfs_image = (await ipfs.files.add(image))[0].hash;
-            console.log(ipfs_image);
-            const deploy = new Buffer(JSON.stringify({
-                ...config,
-                image: ipfs_image,
-            }, null, 4));
-            const infos = (await ipfs.files.add(deploy))[0].hash;
-            console.log(infos);
-            console.log(config);
-            const gas = await Ticket721HUB.methods.runSale(config.title, id, new Web3.utils.BN(config.price), config.cap, infos).estimateGas({from: accounts[account]});
-            await Ticket721HUB.methods.runSale(config.title, id, new Web3.utils.BN(config.price), config.cap, infos).send({
-                from: accounts[account],
-                gas: gas * 2
-            });
-            const ret = await Ticket721HUB.methods.sale_ownership(accounts[account], idx).call();
-            manifest.push({address: ret, status: status});
-            done();
+            ipfs.files.add(image).then(res => {
+                const ipfs_image = res[0].hash;
+                console.log(":: " + ipfs_image);
+                const deploy = new Buffer(JSON.stringify({
+                    ...config,
+                    image: ipfs_image,
+                }, null, 4));
+                ipfs.files.add(deploy).then(_res => {
+                    const infos = _res[0].hash;
+                    console.log(":: " + infos);
+                    console.log(config);
+
+                    const Ticket721EventWeb3 = new Web3.eth.Contract(Ticket721Event.abi);
+
+                    const sale_end = new Date();
+                    sale_end.setDate(sale_end.getDate() + 5);
+                    const event_begin = new Date();
+                    event_begin.setDate(event_begin.getDate() + 6);
+                    const event_end = new Date();
+                    event_end.setDate(event_end.getDate() + 7);
+
+                    Ticket721EventWeb3
+                        .deploy({
+                            data: Ticket721Event.code,
+                            arguments: [
+                                Ticket721VerifiedAddress,
+                                config.cap,
+                                config.price,
+                                infos,
+                                config.title,
+                                Math.floor(sale_end.getTime() / 1000),
+                                Math.floor(event_begin.getTime() / 1000),
+                                Math.floor(event_end.getTime() / 1000)
+                            ]
+                        })
+                        .send({
+                            from: accounts[account],
+                            gas: 5000000
+                        })
+                        .on('error', console.error)
+                        .then(instance => {
+                            Ticket721HUB.methods.registerController(instance.options.address).send({from: accounts[account], gas: 1000000}).then(_ => {
+                                instance.methods.register().send({from: accounts[account], gas: 1000000}).then(_ => {
+                                    manifest.push({address: instance.options.address, status: status});
+                                    done();
+                                }).catch(done);
+                            });
+                        })
+                        .catch(done);
+                }).catch(done);
+            }).catch(done);
         } catch (e) {
             done(e);
         }
     };
 
-    it("Should run a Sale as #2", runSale.bind(null, "T721UTR2018", 1, 0, 'new')).timeout(50000);
-    it("Should run a Sale as #2", runSale.bind(null, "T721ETR2018", 1, 1, 'hot')).timeout(50000);
-    it("Should run a Sale as #2", runSale.bind(null, "T721ETR2019", 1, 2, 'hot')).timeout(50000);
-    it("Should run a Sale as #2", runSale.bind(null, "T721UTT", 1, 3, 'soon')).timeout(50000);
+    it("Should run an Event as #2", runSale.bind(null, "T721UTR2018", 1, 0, 'new')).timeout(500000);
+    it("Should run an Event as #2", runSale.bind(null, "T721ETR2018", 1, 1, 'hot')).timeout(500000);
+    it("Should run an Event as #2", runSale.bind(null, "T721ETR2019", 1, 2, 'hot')).timeout(500000);
+    it("Should run an Event as #2", runSale.bind(null, "T721UTT", 1, 3, 'soon')).timeout(500000);
 
 
     it("Save manifest", async (done) => {
