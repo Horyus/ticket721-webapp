@@ -1,5 +1,5 @@
 import React from 'react';
-import {FeedFilter, FeedType} from 'vort_x';
+import {FeedType, getFeed} from 'vort_x';
 import {connect} from 'vort_x-components';
 import {Ticket721Card} from "../ticket721-card";
 import {Row} from 'antd';
@@ -89,12 +89,8 @@ class _SaleLister extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    let selector;
-    if (!ownProps.selector)
-        selector = FeedFilter(FeedType.Contracts);
     return {
-        feed: ownProps.selector ? ownProps.selector(state) : selector(state),
-        selector: ownProps.selector || selector,
+        feed: getFeed(state, FeedType.Contracts),
         manifest: ownProps.manifest,
         search: state.search
     }

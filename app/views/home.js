@@ -13,7 +13,7 @@ export class Home extends React.Component {
                 marginLeft: "5%",
                 marginTop: "5%",
             }}>
-                <h2 className="main_title">TickΞt721 Marketplace</h2>
+                <h2 className="main_title">TickΞt721</h2>
                 <Filter/>
                 <SaleLister manifest={Manifest}/>
             </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card} from 'antd';
 import {connect} from 'vort_x-components';
-import {IPFSLoad} from 'vort_x';
+import {IPFSLoad, getContract, callContract} from 'vort_x';
 import './index.css';
 import Web3Utils from 'web3-utils';
 import Lottie from 'react-lottie';
@@ -76,11 +76,12 @@ const mapStateToProps = (state, ownProps) => {
     if (state.contracts.Ticket721Event[ownProps.address]) {
         return {
             ...ownProps,
-            instance: state.contracts.Ticket721Event[ownProps.address].instance,
-            name: state.contracts.Ticket721Event[ownProps.address].instance.vortex.name.vortexData({}),
-            price: state.contracts.Ticket721Event[ownProps.address].instance.vortex.getMintPrice.vortexData({}),
-            infos: state.contracts.Ticket721Event[ownProps.address].instance.vortex.getData.vortexData({}),
-            recovered_infos: state.ipfs[state.contracts.Ticket721Event[ownProps.address].instance.vortex.getData.vortexData()]
+            instance: getContract(state, "Ticket721Event", ownProps.address),
+            name: callContract(getContract(state, "Ticket721Event", ownProps.address), "name"),
+            price: callContract(getContract(state, "Ticket721Event", ownProps.address), "getMintPrice"),
+            infos: callContract(getContract(state, "Ticket721Event", ownProps.address), "getData"),
+            recovered_infos: state.ipfs[callContract(getContract(state, "Ticket721Event", ownProps.address), "getData")]
+
         };
     } else {
         return {

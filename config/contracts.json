@@ -18,21 +18,10 @@
         "deploy": false
       },
       "Ticket721Hub": {
-      },
-      "Ticket721Public": {
-        "instanceOf": "Ticket721",
-        "args": [
-          "Ticket721 Public Registry",
-          "T721P",
-          false
-        ]
+	"deploy": false
       },
       "Ticket721": {
-        "args": [
-          "Ticket721 Registry",
-          "T721",
-          true
-        ]
+        "deploy": false
       },
       "Migrations": {
         "deploy": false
@@ -55,11 +44,6 @@
       "Ownable": {
         "deploy": false
       }
-    },
-    "afterDeploy": [
-      "Ticket721.methods.setHub(\"$Ticket721Hub\").send()",
-      "Ticket721Hub.methods.addPublicRegistry(\"$Ticket721Public\").send()",
-      "Ticket721Hub.methods.addVerifiedRegistry(\"$Ticket721\").send()"
-    ]
+    }
   }
 }

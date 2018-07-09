@@ -56,7 +56,22 @@ class App extends React.Component {
 
                 custom_state={this.initialState}
 
-            >
+                ipfs_config={{
+                    host: 'ipfs.infura.io',
+                    port: '5001',
+                    options: {
+                        protocol: 'https'
+                    }
+                }}
+
+                // Configure your backlink endpoint
+                backlink_config={{
+                    url: {
+                        "mainnet": "wss://mainnet.infura.io/ws",
+                        "default": "ws://localhost:8545"
+                    }
+                }}>
+
                 <VortexWeb3Loaded>
                     <FeedNotifications>
                         <ManifestLoader manifest={Manifest}>
