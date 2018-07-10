@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "embark test",
-    "start": "embark run --nodashboard",
-    "setup": "embark build && embark test && embark run --nodashboard"
+    "start": "embark run --nodashboard"
   },
   "author": "",
   "license": "ISC",

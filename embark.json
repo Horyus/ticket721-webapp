@@ -1,5 +1,5 @@
 {
-  "contracts": ["ticket721-contracts/contracts/**"],
+  "contracts": ["./fake_contracts/**"],
   "app": {
     "js/dapp.js": ["app/dapp.js"],
     "index.html": "app/index.html",

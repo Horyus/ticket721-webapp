@@ -11,37 +11,7 @@
     ],
     "gas": "auto",
     "contracts": {
-      "Ticket721VerifiedAccounts": {
-        "deploy": false
-      },
-      "Ticket721Event": {
-        "deploy": false
-      },
-      "Ticket721Hub": {
-	"deploy": false
-      },
-      "Ticket721": {
-        "deploy": false
-      },
-      "Migrations": {
-        "deploy": false
-      },
-      "Ticket721TestReceiver": {
-        "deploy": false
-      },
-      "ERC721Holder": {
-        "deploy": false
-      },
-      "strings": {
-        "deploy": false
-      },
       "AddressUtils": {
-        "deploy": false
-      },
-      "SafeMath": {
-        "deploy": false
-      },
-      "Ownable": {
         "deploy": false
       }
     }
