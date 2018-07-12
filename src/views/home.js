@@ -1,7 +1,7 @@
 import React from 'react';
 import {Filter} from "../components/filter";
 import {SaleLister} from '../components/sale_lister';
-import * as Manifest from '../../manifest.json';
+import * as Manifest from '../../manifest.js';
 import 'antd/dist/antd.css';
 import './home.css';
 

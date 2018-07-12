@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 
 //import EmbarkJS from 'Embark/EmbarkJS';
 import * as Chains from '../chains.json';
-import Ticket721 from 'Embark/contracts/Ticket721';
-import Ticket721Hub from 'Embark/contracts/Ticket721Hub';
-import Ticket721Event from 'Embark/contracts/Ticket721Event';
+import Ticket721 from '../dist/contracts/Ticket721';
+import Ticket721Hub from '../dist/contracts/Ticket721Hub';
+import Ticket721Event from '../dist/contracts/Ticket721Event';
 import {FeedNotifications} from "./components/feed-notifications";
 import {VortexGate, VortexWeb3Loading, VortexWeb3Loaded, VortexWeb3LoadError, VortexWeb3NetworkError, VortexWeb3Locked, VortexMetamaskLoader} from 'vort_x-components';
 import Web3 from 'web3';
-import * as Manifest from '../manifest.json';
+import * as Manifest from '../manifest.js';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import {Home} from "./views/home";
@@ -19,8 +19,11 @@ import './css/open-sans.css';
 import './css/oswald.css';
 import './css/pure-min.css';
 import {ManifestLoader} from "./components/manifest_loader";
+import {ConnectionTracker} from "./components/connection_tracker";
 import {Loader} from "./components/loader";
 import {search} from "./redux/search/search.reducers";
+import {csapi} from './redux/csapi/csapi.reducers';
+import {CsApiSagas} from "./redux/csapi/csapi.sagas";
 
 import './dapp.css';
 
@@ -29,25 +32,46 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            search: ""
+            search: "",
+            csapi: {
+                status: 'DISCONNECTED'
+            }
         };
         this.reducers = {
-            search
+            search,
+            csapi
         };
+        this.sagas = [
+            CsApiSagas
+        ]
     }
 
     render(){
         return (
             <VortexGate
                 contracts={{
-                    type: 'embark',
-                    embark_contracts: {
-                        Ticket721: Ticket721,
-                        Ticket721Hub: Ticket721Hub,
-                        Ticket721Event: Ticket721Event
-                    },
-                    chains: Chains,
-                    preloaded_contracts: ["Ticket721Hub", "Ticket721"]
+                    type: 'manual',
+                    manual_contracts: {
+
+                        Ticket721: {
+                            abi: Ticket721.abiDefinition,
+                            at: Ticket721.address,
+                            deployed_bytecode: Ticket721.runtimeBytecode
+                        },
+
+                        Ticket721Hub: {
+                            abi: Ticket721Hub.abiDefinition,
+                            at: Ticket721Hub.address,
+                            deployed_bytecode: Ticket721Hub.runtimeBytecode
+                        },
+
+                        Ticket721Event: {
+                            abi: Ticket721Event.abiDefinition,
+                            deployed_bytecode: Ticket721Event.runtimeBytecode
+                        }
+
+                    }
+
                 }}
 
                 loader={VortexMetamaskLoader(Web3)}
@@ -55,6 +79,8 @@ class App extends React.Component {
                 reducers_map={this.reducers}
 
                 custom_state={this.initialState}
+
+                custom_sagas={this.sagas}
 
                 ipfs_config={{
                     host: 'ipfs.infura.io',
@@ -75,12 +101,14 @@ class App extends React.Component {
                 <VortexWeb3Loaded>
                     <FeedNotifications>
                         <ManifestLoader manifest={Manifest}>
-                            <BrowserRouter>
-                                <Switch>
-                                    <Route exact path="/" component={Home}/>
-                                    <Route path="/sale/:address" component={Sale}/>
-                                </Switch>
-                            </BrowserRouter>
+                            <ConnectionTracker>
+                                <BrowserRouter>
+                                    <Switch>
+                                        <Route exact path="/" component={Home}/>
+                                        <Route path="/sale/:address" component={Sale}/>
+                                    </Switch>
+                                </BrowserRouter>
+                            </ConnectionTracker>
                         </ManifestLoader>
                     </FeedNotifications>
                 </VortexWeb3Loaded>

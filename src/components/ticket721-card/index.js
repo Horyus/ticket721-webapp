@@ -5,7 +5,7 @@ import {IPFSLoad, getContract, callContract} from 'vort_x';
 import './index.css';
 import Web3Utils from 'web3-utils';
 import Lottie from 'react-lottie';
-import * as Options from './animation.json';
+import * as Options from './animation';
 
 class _Ticket721Card extends React.Component {
     constructor(props) {
