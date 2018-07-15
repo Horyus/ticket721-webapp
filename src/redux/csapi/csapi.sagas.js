@@ -1,17 +1,21 @@
 import { call, put, select, takeEvery, take, takeLatest } from 'redux-saga/effects'
 import {eventChannel, END} from 'redux-saga';
-import {CsApiActionTypes, CsApiCallRegistered, CsApiLoaded, CsApiRegistered} from "./csapi.actions";
+import {
+    CsApiActionTypes,
+    CsApiConnected,
+    CsApiLoaded,
+    CsApiRegistered
+} from "./csapi.actions";
 import {T721CSAPI} from "ticket721-csapi";
-
-function* call_registered(action) {
-
-}
+import {FeedNewError} from 'vort_x';
 
 function* csapi_call_connect(instance) {
     return eventChannel((emit) => {
-        instance.connect().then(registered => {
+        instance.connect().then(connected => {
+            emit(CsApiConnected(connected));
             emit(END);
         }).catch(e => {
+            emit(FeedNewError(e, e.message, "[csapi.sagas.js][csapi_call_connect] Trying to connect"));
             emit(END);
         });
         return (() => {
@@ -55,7 +59,6 @@ function* csapi_call_registered(instance) {
             emit(CsApiRegistered(registered.registered));
             emit(END);
         }).catch(e => {
-            console.error("LOLOLOL");
             emit(END);
         });
         return (() => {
@@ -94,8 +97,8 @@ function* call_registered(action) {
 function* csapi_call_register(instance) {
     return (eventChannel((emit) => {
 
-        instance.register().then(res => {
-            emit(CsApiCallRegistered());
+        instance.register().then(connected => {
+            emit(CsApiConnected(connected));
             emit(END);
         }).catch(e => {
             emit(END);
@@ -124,10 +127,49 @@ function* call_register(action) {
     }
 }
 
+function* fetch_events(action) {
+    console.log("FETCH EVERYTHING");
+}
+
+function* csapi_call_fetch_wallets(instance) {
+    return eventChannel((emit) => {
+        instance.fetch_wallets().then(wallets => {
+            console.log(wallets);
+            emit(END);
+        }).catch(e => {
+            emit(END);
+        });
+        return (() => {
+
+        })
+    });
+}
+
+function* fetch_infos(action) {
+    const csapi = (yield select()).csapi;
+
+    if (csapi.status === 'CONNECTED') {
+        const call_fetch_wallets = yield call(csapi_call_fetch_wallets, csapi.instance);
+
+        try {
+            while (true) {
+                const event = yield take(call_fetch_wallets);
+                yield put(event);
+            }
+        } finally {
+            call_fetch_wallets.close();
+        }
+    } else {
+        console.warn("Called register while in wrong status")
+    }
+}
+
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
-    yield takeEvery('CSAPI_LOADED', call_loaded);
+    yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
+    yield takeEvery(CsApiActionTypes.CSAPI_LOADED, fetch_events);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTERED, call_registered);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
+    yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
 }
