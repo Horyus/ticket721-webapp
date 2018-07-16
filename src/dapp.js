@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 //import EmbarkJS from 'Embark/EmbarkJS';
 import * as Chains from '../chains.json';
 import Ticket721 from '../dist/contracts/Ticket721';
+import Ticket721Public from '../dist/contracts/Ticket721Public';
 import Ticket721Hub from '../dist/contracts/Ticket721Hub';
 import Ticket721Event from '../dist/contracts/Ticket721Event';
 import {FeedNotifications} from "./components/feed-notifications";
@@ -34,7 +35,11 @@ class App extends React.Component {
         this.initialState = {
             search: "",
             csapi: {
-                status: 'DISCONNECTED'
+                status: 'DISCONNECTED',
+                wallet_status: 'NONE',
+                event_status: 'NONE',
+                public_wallet: [],
+                verified_wallet: []
             }
         };
         this.reducers = {
@@ -55,13 +60,19 @@ class App extends React.Component {
 
                         Ticket721: {
                             abi: Ticket721.abiDefinition,
-                            at: Ticket721.address,
+                            at: Ticket721.deployedAddress,
                             deployed_bytecode: Ticket721.runtimeBytecode
+                        },
+
+                        Ticket721Public: {
+                            abi: Ticket721Public.abiDefinition,
+                            at: Ticket721Public.deployedAddress,
+                            deployed_bytecode: Ticket721Public.runtimeBytecode
                         },
 
                         Ticket721Hub: {
                             abi: Ticket721Hub.abiDefinition,
-                            at: Ticket721Hub.address,
+                            at: Ticket721Hub.deployedAddress,
                             deployed_bytecode: Ticket721Hub.runtimeBytecode
                         },
 

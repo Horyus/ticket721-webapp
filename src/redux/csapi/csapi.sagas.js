@@ -2,7 +2,7 @@ import { call, put, select, takeEvery, take, takeLatest } from 'redux-saga/effec
 import {eventChannel, END} from 'redux-saga';
 import {
     CsApiActionTypes,
-    CsApiConnected,
+    CsApiConnected, CsApiFetchWalletsDone, CsApiGetInfos, CsApiGotInfos,
     CsApiLoaded,
     CsApiRegistered
 } from "./csapi.actions";
@@ -135,6 +135,23 @@ function* csapi_call_fetch_wallets(instance) {
     return eventChannel((emit) => {
         instance.fetch_wallets().then(wallets => {
             console.log(wallets);
+            emit(CsApiFetchWalletsDone(wallets.public_wallet, wallets.verified_wallet));
+            emit(END);
+        }).catch(e => {
+            emit(END);
+        });
+        return (() => {
+
+        })
+    });
+}
+
+function* csapi_call_get_infos(instance) {
+    return eventChannel((emit) => {
+        emit(CsApiGetInfos());
+        instance.get_infos().then(infos => {
+            console.log(infos);
+            emit(CsApiGotInfos(infos.public_wallet, infos.verified_wallet));
             emit(END);
         }).catch(e => {
             emit(END);
@@ -149,6 +166,25 @@ function* fetch_infos(action) {
     const csapi = (yield select()).csapi;
 
     if (csapi.status === 'CONNECTED') {
+        const call_get_infos = yield call(csapi_call_get_infos, csapi.instance);
+
+        try {
+            while (true) {
+                const event = yield take(call_get_infos);
+                yield put(event);
+            }
+        } finally {
+            call_get_infos.close();
+        }
+    } else {
+        console.warn("Called get_infos while in wrong status")
+    }
+}
+
+function* fetch_wallets(action) {
+    const csapi = (yield select()).csapi;
+
+    if (csapi.status === 'CONNECTED') {
         const call_fetch_wallets = yield call(csapi_call_fetch_wallets, csapi.instance);
 
         try {
@@ -160,7 +196,7 @@ function* fetch_infos(action) {
             call_fetch_wallets.close();
         }
     } else {
-        console.warn("Called register while in wrong status")
+        console.warn("Called fetch_wallets while in wrong status")
     }
 }
 
@@ -172,4 +208,5 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
+    yield takeEvery(CsApiActionTypes.CSAPI_FETCH_WALLETS, fetch_wallets);
 }

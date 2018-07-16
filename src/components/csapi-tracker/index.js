@@ -50,36 +50,25 @@ export class _CsApiTracker extends React.Component {
 
         if (title === 'not registered')
             return (
-                <Card className="csapi-tracker" title="cache status" bodyStyle={{height: '150px'}}>
-                    <div style={{height: '50px', lineHeight: '50px'}}>
-                        <Icon type="database" style={{marginLeft: '10px', lineHeight: '50px', verticalAlign: 'middle', fontSize: 20, color: color, float: 'left', marginRight: '5px'}}/>
-                        <p className="status">{title}</p>
-                        <div style={{textAlign: 'center'}}>
-                            <Button type="primary" onClick={this.run_register}>Register</Button>
-                        </div>
+                <Card className="csapi-tracker">
+                    <div style={{textAlign: 'center'}}>
+                        <p>You are not registered</p>
+                        <Button type="primary" onClick={this.run_register}>Register</Button>
                     </div>
                 </Card>
             );
         else if (title === 'disconnected')
             return (
-                <Card className="csapi-tracker" title="cache status" bodyStyle={{height: '150px'}}>
-                    <div style={{height: '50px', lineHeight: '50px'}}>
-                        <Icon type="database" style={{marginLeft: '10px', lineHeight: '50px', verticalAlign: 'middle', fontSize: 20, color: color, float: 'left', marginRight: '5px'}}/>
-                        <p className="status">{title}</p>
-                        <div style={{textAlign: 'center'}}>
-                            <Button type="primary" onClick={this.run_connect}>Connect</Button>
-                        </div>
+                <Card className="csapi-tracker">
+                    <div style={{textAlign: 'center'}}>
+                        <p>You are not connected</p>
+                        <Button type="primary" onClick={this.run_connect}>Connect</Button>
                     </div>
                 </Card>
             );
         else
             return (
-                <Card className="csapi-tracker" title="cache status">
-                    <div style={{height: '50px', lineHeight: '50px'}}>
-                        <Icon type="database" style={{marginLeft: '10px', lineHeight: '50px', verticalAlign: 'middle', fontSize: 20, color: color, float: 'left', marginRight: '5px'}}/>
-                        <p className="status">{title}</p>
-                    </div>
-                </Card>
+                <div></div>
             );
     }
 }

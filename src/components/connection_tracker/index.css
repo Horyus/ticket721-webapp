@@ -6,10 +6,45 @@
     position: fixed;
 }
 
+.connection-tracker {
+    width: 80%;
+    margin-top: 5%;
+    margin-left: 10%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    vertical-align: middle;
+}
+
+.connection-tracker:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+}
+
 .right-div {
     left: 20%;
     top: 0;
     width: 80%;
     height: 100%;
     position: absolute;
+}
+
+.popover-text {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+
+.popover-title {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+
+.profile-link {
+    float: left;
+}
+
+.profile-title {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 0;
 }
