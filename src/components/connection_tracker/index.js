@@ -68,7 +68,7 @@ export class _ConnectionTracker extends React.Component {
             case 'NOT_REGISTERED':
                 csapi_color = 'orange';
                 csapi_content = <div>
-                    <p className="popover-text">You are registered in the cache server</p>
+                    <p className="popover-text">You are not registered in the cache server</p>
                 </div>;
                 break ;
 
