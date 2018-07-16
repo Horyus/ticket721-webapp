@@ -9,6 +9,7 @@ import * as Fuzzy from 'fuzzy';
 class _SaleLister extends React.Component {
     constructor(props) {
         super(props);
+        console.log("CONSTRUCTING");
         this.node_array = {
             hot: [],
             new: [],
@@ -26,6 +27,7 @@ class _SaleLister extends React.Component {
         this.children_infos = {};
         this.filter = this.filter.bind(this);
         this.updateInfos = this.updateInfos.bind(this);
+        this.populate(this.props);
     }
 
     updateInfos(key, name, symbol) {
@@ -35,8 +37,25 @@ class _SaleLister extends React.Component {
         }
     }
 
+    populate(nextProps) {
+        for (; this.feed_size < nextProps.feed.length; ++this.feed_size) {
+            if (nextProps.feed[this.feed_size].contract_name === 'Ticket721Event') {
+                for (let manifest_idx = 0; manifest_idx < this.props.manifest.length; ++manifest_idx) {
+                    if (this.props.manifest[manifest_idx].address.toLowerCase() === nextProps.feed[this.feed_size].contract_address.toLowerCase()) {
+                        const ticket721Card = <Ticket721Card address={nextProps.feed[this.feed_size].contract_address.toLowerCase()} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
+                        this.node_array[this.props.manifest[manifest_idx].status].push(
+                            ticket721Card
+                        );
+                        this.node_array.all.push(ticket721Card);
+                    }
+                }
+            }
+        }
+    }
+
     shouldComponentUpdate(nextProps) {
         let ret = false;
+        console.log("UPDATE", this.node_array);
         for (; this.feed_size < nextProps.feed.length; ++this.feed_size) {
             if (nextProps.feed[this.feed_size].contract_name === 'Ticket721Event') {
                 for (let manifest_idx = 0; manifest_idx < this.props.manifest.length; ++manifest_idx) {
@@ -64,6 +83,7 @@ class _SaleLister extends React.Component {
     }
 
     render() {
+        console.log(this.node_array);
         if (this.props.search === "") {
             return (<div>
                 <Row gutter={16}>

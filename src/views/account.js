@@ -1,7 +1,7 @@
 import React from 'react';
 import {ConnectionTracker} from "../components/connection_tracker";
 
-export class Sale extends React.Component {
+export class Account extends React.Component {
     constructor(props) {
         super(props);
         console.log(props.match.params.address);
@@ -11,7 +11,7 @@ export class Sale extends React.Component {
         return (
             <div>
                 <h2>
-                    SALE
+                    HELLO {this.props.match.params.address}
                 </h2>
             </div>
         )

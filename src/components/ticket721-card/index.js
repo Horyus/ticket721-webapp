@@ -6,6 +6,7 @@ import './index.css';
 import Web3Utils from 'web3-utils';
 import Lottie from 'react-lottie';
 import * as Options from './animation';
+import {withRouter} from 'react-router-dom';
 
 class _Ticket721Card extends React.Component {
     constructor(props) {
@@ -32,7 +33,9 @@ class _Ticket721Card extends React.Component {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
                 this.image_source = "https://gateway.ipfs.io/ipfs/" + parsed.image;
-                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source}/>}
+                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source} onClick={() => {
+                    this.props.history.push('/sale' + this.props.address)
+                }}/>}
                               style={{
                                   width: 300,
                                   height: 300,
@@ -96,4 +99,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export const Ticket721Card = connect(_Ticket721Card, mapStateToProps, mapDispatchToProps);
+export const Ticket721Card = withRouter(connect(_Ticket721Card, mapStateToProps, mapDispatchToProps));

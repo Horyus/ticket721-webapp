@@ -32,6 +32,7 @@
     "get-eth-price": "^1.0.0",
     "ipfs-api": "^22.0.1",
     "jdenticon": "^2.1.0",
+    "prop-types": "^15.6.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-lottie": "^1.1.0",

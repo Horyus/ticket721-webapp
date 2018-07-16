@@ -4,6 +4,9 @@ import {getContract, callContract} from 'vort_x';
 import {connect} from 'vort_x-components';
 import {Card, Icon, Popover} from 'antd'
 import renderHTML from 'react-render-html';
+import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types';
+
 
 import {CsApiTracker} from "../csapi-tracker";
 import {CsApiFetchWallets} from "../../redux/csapi/csapi.actions";
@@ -12,14 +15,7 @@ export class _ConnectionTracker extends React.Component {
 
     initial_fetch = false;
 
-    componentDidUpdate() {
-        if (!this.initial_fetch && this.props.public_wallet_live_count && this.props.verified_wallet_live_count && this.props.csapi.wallet_status === 'IDLE') {
-            if ((parseInt(this.props.public_wallet_live_count) !== this.props.csapi.public_wallet.length)
-                || (parseInt(this.props.verified_wallet_live_count) !== this.props.csapi.verified_wallet.length)) {
-                this.props.fetchWallets();
-            }
-            this.initial_fetch = true;
-        }
+    updateJdenticon() {
         if (jdenticon) {
             jdenticon.config = {
                 lightness: {
@@ -36,13 +32,29 @@ export class _ConnectionTracker extends React.Component {
         }
     }
 
+    componentDidUpdate() {
+        if (!this.initial_fetch && this.props.public_wallet_live_count && this.props.verified_wallet_live_count && this.props.csapi.wallet_status === 'IDLE') {
+            if ((parseInt(this.props.public_wallet_live_count) !== this.props.csapi.public_wallet.length)
+                || (parseInt(this.props.verified_wallet_live_count) !== this.props.csapi.verified_wallet.length)) {
+                this.props.fetchWallets();
+            }
+            this.initial_fetch = true;
+        }
+        this.updateJdenticon();
+    }
+
+    componentDidMount() {
+        console.log(this.props);
+        this.updateJdenticon();
+    }
+
     render() {
 
         let csapi_color;
         let csapi_content;
         switch (this.props.csapi.status) {
             case 'DISCONNECTED':
-                csapi_color = 'red';
+                csapi_color = 'gray';
                 csapi_content = <div>
                     <p className="popover-text">You are not connected to the cache server</p>
                 </div>;
@@ -61,7 +73,7 @@ export class _ConnectionTracker extends React.Component {
                 break ;
 
             default:
-                csapi_color = 'red';
+                csapi_color = 'gray';
                 break;
         }
 
@@ -75,7 +87,7 @@ export class _ConnectionTracker extends React.Component {
                 </div>;
                 break;
             default:
-                backlink_color = 'red';
+                backlink_color = 'gray';
                 backlink_content = <div>
                     <p className="popover-text">Backlink is not connected</p>
                 </div>;
@@ -93,7 +105,7 @@ export class _ConnectionTracker extends React.Component {
                 </div>;
                 break ;
             case 'NONE':
-                wallet_color = 'red';
+                wallet_color = 'gray';
                 wallet_icon = 'folder';
                 wallet_content = <div>
                     <p className="popover-text">Personnal wallet not up to date</p>
@@ -107,14 +119,14 @@ export class _ConnectionTracker extends React.Component {
                 </div>;
                 break ;
             default:
-                wallet_color = 'red';
+                wallet_color = 'gray';
                 wallet_icon = 'folder';
                 wallet_content = <div>
                     <p className="popover-text">Personnal wallet not up to date</p>
                 </div>;
         }
 
-        let public_color = 'red';
+        let public_color = 'gray';
         let public_content = <div>
             <p className="popover-text">Public Ticket registry not loaded</p>
         </div>;
@@ -125,7 +137,7 @@ export class _ConnectionTracker extends React.Component {
             </div>;
         }
 
-        let verified_color = 'red';
+        let verified_color = 'gray';
         let verified_content = <div>
             <p className="popover-text">Verified Ticket registry not loaded</p>
         </div>;
@@ -134,6 +146,35 @@ export class _ConnectionTracker extends React.Component {
             verified_content = <div>
                 <p className="popover-text">Verified Ticket registry loaded</p>
             </div>;
+        }
+
+        const profile_link = this.props.csapi.status === 'CONNECTED'
+            ?
+            <Card className="connection-tracker" onClick={() => {this.props.history.push("/account/" + this.props.coinbase)}} key={1}>
+                <Popover placement="right" content={<p className="popover-text">{this.props.coinbase}</p>} trigger="hover">
+                    {renderHTML('<svg data-jdenticon-value="' + this.props.coinbase + '" width="30" height="30" class="profile-link"/>')}
+                </Popover>
+                <p className="profile-title">My Account</p>
+            </Card>
+            :
+            <div key={1}></div>;
+
+        const marketplace_link = <Card className="connection-tracker" onClick={() => {this.props.history.push("/marketplace")}} key={2}>
+            <p className="profile-title">Marketplace</p>
+        </Card>;
+
+        const home_link = <Card className="connection-tracker" onClick={() => {this.props.history.push("/")}} key={3}>
+            <p className="profile-title">Home</p>
+        </Card>;
+
+        let links = [profile_link, home_link, marketplace_link];
+
+        if (this.props.location.pathname === "/") {
+            links = [profile_link, marketplace_link]
+        } else if (this.props.location.pathname.indexOf('/account') === 0) {
+            links = [home_link, marketplace_link]
+        } else if (this.props.location.pathname === '/marketplace') {
+            links = [profile_link, home_link]
         }
 
         return (
@@ -158,17 +199,7 @@ export class _ConnectionTracker extends React.Component {
                             </Popover>
                         </div>
                     </Card>
-                    {this.props.csapi.status === 'CONNECTED'
-                        ?
-                        <Card className="connection-tracker">
-                            <Popover placement="right" content={<p className="popover-text">{this.props.coinbase}</p>} trigger="hover">
-                            {renderHTML('<svg data-jdenticon-value="' + this.props.coinbase + '" width="35" height="35" class="profile-link"/>')}
-                            </Popover>
-                            <p className="profile-title">My Account</p>
-                        </Card>
-                        :
-                        <div></div>
-                    }
+                    {links}
                     <CsApiTracker/>
                 </div>
                 <div className="right-div">
@@ -179,10 +210,17 @@ export class _ConnectionTracker extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
+_ConnectionTracker.contextTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    })
+};
+
+const mapStateToProps = (state, ownProps) => {
     const public_address = Object.keys(state.contracts.Ticket721Public).filter(elem => elem !== 'artifact')[0];
     const verified_address = Object.keys(state.contracts.Ticket721).filter(elem => elem !== 'artifact')[0];
     return {
+        ...ownProps,
         csapi: state.csapi,
         backlink: state.backlink,
         public_wallet_live_count: public_address ? callContract(getContract(state, 'Ticket721Public', public_address), 'balanceOf', state.web3.coinbase) : undefined,
@@ -197,4 +235,4 @@ const  mapDispatchToProps = (dispatch) => {
     }
 };
 
-export const ConnectionTracker = connect(_ConnectionTracker, mapStateToProps, mapDispatchToProps);
+export const ConnectionTracker = withRouter(connect(_ConnectionTracker, mapStateToProps, mapDispatchToProps));

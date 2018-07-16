@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-//import EmbarkJS from 'Embark/EmbarkJS';
-import * as Chains from '../chains.json';
 import Ticket721 from '../dist/contracts/Ticket721';
 import Ticket721Public from '../dist/contracts/Ticket721Public';
 import Ticket721Hub from '../dist/contracts/Ticket721Hub';
@@ -15,12 +13,14 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import {Home} from "./views/home";
 import {Sale} from "./views/sale";
+import {Account} from "./views/account";
+
+import {ConnectionTracker} from "./components/connection_tracker";
 
 import './css/open-sans.css';
 import './css/oswald.css';
 import './css/pure-min.css';
 import {ManifestLoader} from "./components/manifest_loader";
-import {ConnectionTracker} from "./components/connection_tracker";
 import {Loader} from "./components/loader";
 import {search} from "./redux/search/search.reducers";
 import {csapi} from './redux/csapi/csapi.reducers';
@@ -112,14 +112,15 @@ class App extends React.Component {
                 <VortexWeb3Loaded>
                     <FeedNotifications>
                         <ManifestLoader manifest={Manifest}>
-                            <ConnectionTracker>
-                                <BrowserRouter>
+                            <BrowserRouter>
+                                <ConnectionTracker>
                                     <Switch>
                                         <Route exact path="/" component={Home}/>
                                         <Route path="/sale/:address" component={Sale}/>
+                                        <Route path="/account/:address" component={Account}/>
                                     </Switch>
-                                </BrowserRouter>
-                            </ConnectionTracker>
+                                </ConnectionTracker>
+                            </BrowserRouter>
                         </ManifestLoader>
                     </FeedNotifications>
                 </VortexWeb3Loaded>

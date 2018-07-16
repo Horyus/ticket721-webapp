@@ -2,21 +2,22 @@ import React from 'react';
 import {Filter} from "../components/filter";
 import {SaleLister} from '../components/sale_lister';
 import * as Manifest from '../../manifest.js';
+import {withRouter} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './home.css';
 
-export class Home extends React.Component {
+class _Home extends React.Component {
     render() {
         return (
-            <div style={{
-                width: "90%",
-                marginLeft: "5%",
-                marginTop: "5%",
-            }}>
-                <h2 className="main_title">TickΞt721</h2>
-                <Filter/>
-                <SaleLister manifest={Manifest}/>
-            </div>
+                <div style={{
+                    width: "100%",
+                }}>
+                    <h2 className="main_title">TickΞt721</h2>
+                    <Filter/>
+                    <SaleLister manifest={Manifest}/>
+                </div>
         )
     }
 }
+
+export const Home = withRouter(_Home);
