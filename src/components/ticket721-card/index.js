@@ -32,8 +32,7 @@ class _Ticket721Card extends React.Component {
         if (this.props.recovered_infos) {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
-                this.image_source = "https://gateway.ipfs.io/ipfs/" + parsed.image;
-                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source} onClick={() => {
+                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={parsed.image} onClick={() => {
                     this.props.history.push('/sale' + this.props.address)
                 }}/>}
                               style={{
@@ -82,8 +81,8 @@ const mapStateToProps = (state, ownProps) => {
             instance: getContract(state, "Ticket721Event", ownProps.address),
             name: callContract(getContract(state, "Ticket721Event", ownProps.address), "name"),
             price: callContract(getContract(state, "Ticket721Event", ownProps.address), "getMintPrice"),
-            infos: callContract(getContract(state, "Ticket721Event", ownProps.address), "getData"),
-            recovered_infos: state.ipfs[callContract(getContract(state, "Ticket721Event", ownProps.address), "getData")]
+            infos: callContract(getContract(state, "Ticket721Event", ownProps.address), "getEventURI"),
+            recovered_infos: state.ipfs[callContract(getContract(state, "Ticket721Event", ownProps.address), "getEventURI")]
 
         };
     } else {

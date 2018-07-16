@@ -11,10 +11,15 @@ class _Home extends React.Component {
         return (
                 <div style={{
                     width: "100%",
+                    backgroundColor: '#ffffff'
                 }}>
+                    <div style={{
+                        marginLeft: '30px'
+                    }}>
                     <h2 className="main_title">TickΞt721</h2>
                     <Filter/>
                     <SaleLister manifest={Manifest}/>
+                    </div>
                 </div>
         )
     }
