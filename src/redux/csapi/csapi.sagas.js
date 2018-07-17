@@ -2,7 +2,7 @@ import { call, put, select, takeEvery, take, takeLatest } from 'redux-saga/effec
 import {eventChannel, END} from 'redux-saga';
 import {
     CsApiActionTypes,
-    CsApiConnected, CsApiFetchWalletsDone, CsApiGetInfos, CsApiGotInfos,
+    CsApiConnected, CsApiFetchWalletsDone, CsApiGetInfos, CsApiGettingEvents, CsApiGotEvents, CsApiGotInfos,
     CsApiLoaded,
     CsApiRegistered
 } from "./csapi.actions";
@@ -127,14 +127,39 @@ function* call_register(action) {
     }
 }
 
+function* csapi_call_get_events(instance) {
+    return eventChannel((emit) => {
+        emit(CsApiGettingEvents());
+        instance.get_events().then(events => {
+            emit(CsApiGotEvents(events));
+            emit(END);
+        }).catch(e => {
+            emit(END);
+        });
+        return (() => {
+
+        })
+    });
+}
+
 function* fetch_events(action) {
-    console.log("FETCH EVERYTHING");
+    const csapi = (yield select()).csapi;
+
+    const call_get_events = yield call(csapi_call_get_events, csapi.instance);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_events);
+            yield put(event);
+        }
+    } finally {
+        call_get_events.close();
+    }
 }
 
 function* csapi_call_fetch_wallets(instance) {
     return eventChannel((emit) => {
         instance.fetch_wallets().then(wallets => {
-            console.log(wallets);
             emit(CsApiFetchWalletsDone(wallets.public_wallet, wallets.verified_wallet));
             emit(END);
         }).catch(e => {
@@ -150,7 +175,6 @@ function* csapi_call_get_infos(instance) {
     return eventChannel((emit) => {
         emit(CsApiGetInfos());
         instance.get_infos().then(infos => {
-            console.log(infos);
             emit(CsApiGotInfos(infos.public_wallet, infos.verified_wallet));
             emit(END);
         }).catch(e => {

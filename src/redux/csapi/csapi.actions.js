@@ -9,7 +9,10 @@ export const CsApiActionTypes = {
     CSAPI_GET_INFOS: 'CSAPI_GET_INFOS',
     CSAPI_GOT_INFOS: 'CSAPI_GOT_INFOS',
     CSAPI_FETCH_WALLETS: 'CSAPI_FETCH_WALLETS',
-    CSAPI_FETCH_WALLETS_DONE: 'CSAPI_FETCH_WALLETS_DONE'
+    CSAPI_FETCH_WALLETS_DONE: 'CSAPI_FETCH_WALLETS_DONE',
+    CSAPI_GET_EVENTS: 'CSAPI_GET_EVENTS',
+    CSAPI_GETTING_EVENTS: 'CSAPI_GETTING_EVENTS',
+    CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS'
 };
 
 export const CsApiInit = (url, coinbase) => {
@@ -85,6 +88,25 @@ export const CsApiFetchWalletsDone = (public_wallet, verified_wallet) => {
         type: CsApiActionTypes.CSAPI_FETCH_WALLETS_DONE,
         public_wallet,
         verified_wallet
+    }
+};
+
+export const CsApiGetEvents = () => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_EVENTS
+    }
+};
+
+export const CsApiGettingEvents = () => {
+    return {
+        type: CsApiActionTypes.CSAPI_GETTING_EVENTS
+    }
+};
+
+export const CsApiGotEvents = (events) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_EVENTS,
+        events
     }
 };
 

@@ -44,7 +44,6 @@ export class _ConnectionTracker extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         this.updateJdenticon();
     }
 

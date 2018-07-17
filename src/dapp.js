@@ -39,7 +39,8 @@ class App extends React.Component {
                 wallet_status: 'NONE',
                 event_status: 'NONE',
                 public_wallet: [],
-                verified_wallet: []
+                verified_wallet: [],
+                events: []
             }
         };
         this.reducers = {

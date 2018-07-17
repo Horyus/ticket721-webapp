@@ -8,6 +8,18 @@ import Lottie from 'react-lottie';
 import * as Options from './animation';
 import {withRouter} from 'react-router-dom';
 
+const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
+
+function filterHash(uri) {
+    if (!uri)
+        return uri;
+    let match;
+    if ((match = uri.match(IpfsGatewayRegexp))) {
+        return match[5];
+    }
+    return uri;
+}
+
 class _Ticket721Card extends React.Component {
     constructor(props) {
         super(props);
@@ -33,7 +45,7 @@ class _Ticket721Card extends React.Component {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
                 return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={parsed.image} onClick={() => {
-                    this.props.history.push('/sale' + this.props.address)
+                    this.props.history.push('/sale/' + this.props.address)
                 }}/>}
                               style={{
                                   width: 300,
@@ -75,15 +87,13 @@ class _Ticket721Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (state.contracts.Ticket721Event[ownProps.address]) {
+    if (state.contracts.Ticket721Event[ownProps.address] && ownProps.event) {
         return {
             ...ownProps,
-            instance: getContract(state, "Ticket721Event", ownProps.address),
-            name: callContract(getContract(state, "Ticket721Event", ownProps.address), "name"),
-            price: callContract(getContract(state, "Ticket721Event", ownProps.address), "getMintPrice"),
-            infos: callContract(getContract(state, "Ticket721Event", ownProps.address), "getEventURI"),
-            recovered_infos: state.ipfs[callContract(getContract(state, "Ticket721Event", ownProps.address), "getEventURI")]
-
+            name: ownProps.event.name,
+            price: callContract(getContract(state, "Ticket721Event", ownProps.event.address), "getMintPrice"),
+            infos: filterHash(ownProps.event.info_uri),
+            recovered_infos: state.ipfs[filterHash(ownProps.event.info_uri)]
         };
     } else {
         return {

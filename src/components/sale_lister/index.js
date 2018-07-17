@@ -7,16 +7,17 @@ import {getEthPriceNow} from 'get-eth-price';
 import * as Fuzzy from 'fuzzy';
 
 class _SaleLister extends React.Component {
+
+    node_array = {
+        hot: [],
+        new: [],
+        none: [],
+        soon: [],
+        all: []
+    };
+
     constructor(props) {
         super(props);
-        console.log("CONSTRUCTING");
-        this.node_array = {
-            hot: [],
-            new: [],
-            none: [],
-            soon: [],
-            all: []
-        };
         this.feed_size = 0;
         this.prices = {};
         getEthPriceNow().then(result => {
@@ -38,38 +39,27 @@ class _SaleLister extends React.Component {
     }
 
     populate(nextProps) {
-        for (; this.feed_size < nextProps.feed.length; ++this.feed_size) {
-            if (nextProps.feed[this.feed_size].contract_name === 'Ticket721Event') {
-                for (let manifest_idx = 0; manifest_idx < this.props.manifest.length; ++manifest_idx) {
-                    if (this.props.manifest[manifest_idx].address.toLowerCase() === nextProps.feed[this.feed_size].contract_address.toLowerCase()) {
-                        const ticket721Card = <Ticket721Card address={nextProps.feed[this.feed_size].contract_address.toLowerCase()} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
-                        this.node_array[this.props.manifest[manifest_idx].status].push(
-                            ticket721Card
-                        );
-                        this.node_array.all.push(ticket721Card);
-                    }
-                }
-            }
+        for (; this.feed_size < nextProps.events.length; ++this.feed_size) {
+
+            const ticket721Card = <Ticket721Card address={nextProps.events[this.feed_size].address.toLowerCase()} event={nextProps.events[this.feed_size]} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
+            this.node_array[nextProps.events[this.feed_size].category].push(
+                ticket721Card
+            );
+            this.node_array.all.push(ticket721Card);
         }
     }
 
     shouldComponentUpdate(nextProps) {
         let ret = false;
-        console.log("UPDATE", this.node_array);
-        for (; this.feed_size < nextProps.feed.length; ++this.feed_size) {
-            if (nextProps.feed[this.feed_size].contract_name === 'Ticket721Event') {
-                for (let manifest_idx = 0; manifest_idx < this.props.manifest.length; ++manifest_idx) {
-                    if (this.props.manifest[manifest_idx].address.toLowerCase() === nextProps.feed[this.feed_size].contract_address.toLowerCase()) {
-                        const ticket721Card = <Ticket721Card address={nextProps.feed[this.feed_size].contract_address.toLowerCase()} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
-                        this.node_array[this.props.manifest[manifest_idx].status].push(
-                            ticket721Card
-                        );
-                        this.node_array.all.push(ticket721Card);
-                        if (!ret)
-                            ret = true;
-                    }
-                }
-            }
+        for (; this.feed_size < nextProps.events.length; ++this.feed_size) {
+
+            const ticket721Card = <Ticket721Card address={nextProps.events[this.feed_size].address.toLowerCase()} event={nextProps.events[this.feed_size]} fiat={this.prices} onUpdate={this.updateInfos} _key={this.feed_size} key={this.feed_size}/>;
+            this.node_array[nextProps.events[this.feed_size].category].push(
+                ticket721Card
+            );
+            this.node_array.all.push(ticket721Card);
+            if (!ret)
+                ret = true;
         }
         if (this.search !== nextProps.search) {
             this.search = nextProps.search;
@@ -83,22 +73,47 @@ class _SaleLister extends React.Component {
     }
 
     render() {
-        console.log(this.node_array);
         if (this.props.search === "") {
             return (<div>
-                <Row gutter={16}>
-                    <h3 className="section_title">hot 🔥</h3>
-                    {this.node_array.hot}
-                </Row>
-                <Row gutter={16}>
-                    <h3 className="section_title">new ✨</h3>
-                    {this.node_array.new}
-                </Row>
-                <Row gutter={16}>
-                    <h3 className="section_title">soon 🕣</h3>
-                    {this.node_array.soon}
-                    {this.node_array.none}
-                </Row>
+                {
+                    this.node_array.hot.length
+                        ?
+                        <Row gutter={16}>
+                            <h3 className="section_title">hot 🔥</h3>
+                            {this.node_array.hot}
+                        </Row>
+                        :
+                        <div></div>
+                }
+                {
+                    this.node_array.new.length
+                        ?
+                        <Row gutter={16}>
+                            <h3 className="section_title">new ✨</h3>
+                            {this.node_array.new}
+                        </Row>
+                        :
+                        <div></div>
+                }
+                {
+                    this.node_array.soon.length
+                        ?
+                        <Row gutter={16}>
+                            <h3 className="section_title">soon 🕣</h3>
+                            {this.node_array.soon}
+                        </Row>
+                        :
+                        <div></div>
+                }
+                {
+                    this.node_array.none.length
+                        ?
+                        <Row gutter={16}>
+                            {this.node_array.none}
+                        </Row>
+                        :
+                        <div></div>
+                }
             </div>)
         } else {
             return (<Row gutter={16}>
@@ -111,7 +126,7 @@ class _SaleLister extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         feed: getFeed(state, FeedType.Contracts),
-        manifest: ownProps.manifest,
+        events: state.csapi.events,
         search: state.search
     }
 };

@@ -11,6 +11,7 @@ class _Home extends React.Component {
         return (
                 <div style={{
                     width: "100%",
+                    minHeight: "110%",
                     backgroundColor: '#ffffff'
                 }}>
                     <div style={{

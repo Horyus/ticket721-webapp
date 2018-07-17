@@ -53,7 +53,22 @@ const CsApiFetchWalletsDoneReducer = (state, action) => {
     };
 };
 
-export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: []}, action) => {
+const CsApiGettingEventsReducer = (state, action) => {
+    return {
+        ...state,
+        event_status: 'FETCHING'
+    }
+};
+
+const CsApiGotEventsReducer = (state, action) => {
+    return {
+        ...state ,
+        event_status: 'IDLE',
+        events: action.events
+    }
+};
+
+export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: [], events: []}, action) => {
 
     switch (action.type) {
         case (CsApiActionTypes.CSAPI_LOADED):
@@ -70,6 +85,10 @@ export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', ev
             return CsApiFetchWalletsReducer(state, action);
         case (CsApiActionTypes.CSAPI_FETCH_WALLETS_DONE):
             return CsApiFetchWalletsDoneReducer(state, action);
+        case (CsApiActionTypes.CSAPI_GETTING_EVENTS):
+            return CsApiGettingEventsReducer(state, action);
+        case (CsApiActionTypes.CSAPI_GOT_EVENTS):
+            return CsApiGotEventsReducer(state, action);
         default:
             return state
     }
