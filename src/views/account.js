@@ -9,10 +9,18 @@ export class Account extends React.Component {
 
     render() {
         return (
-            <div>
-                <h2>
-                    HELLO {this.props.match.params.address}
-                </h2>
+            <div style={{
+                width: "100%",
+                minHeight: "110%",
+                backgroundColor: '#ffffff'
+            }}>
+                <div style={{
+                    marginLeft: '30px'
+                }}>
+                    <h2>
+                        ADDRESS
+                    </h2>
+                </div>
             </div>
         )
     }

@@ -9,10 +9,18 @@ export class Sale extends React.Component {
 
     render() {
         return (
-            <div>
-                <h2>
-                    SALE
-                </h2>
+            <div style={{
+                width: "100%",
+                minHeight: "110%",
+                backgroundColor: '#ffffff'
+            }}>
+                <div style={{
+                    marginLeft: '30px'
+                }}>
+                    <h2>
+                        SALE
+                    </h2>
+                </div>
             </div>
         )
     }

@@ -92,8 +92,8 @@ const mapStateToProps = (state, ownProps) => {
             ...ownProps,
             name: ownProps.event.name,
             price: callContract(getContract(state, "Ticket721Event", ownProps.event.address), "getMintPrice"),
-            infos: filterHash(ownProps.event.info_uri),
-            recovered_infos: state.ipfs[filterHash(ownProps.event.info_uri)]
+            infos: filterHash(ownProps.event.infos),
+            recovered_infos: state.ipfs[filterHash(ownProps.event.infos)]
         };
     } else {
         return {

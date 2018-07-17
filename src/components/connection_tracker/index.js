@@ -124,6 +124,39 @@ export class _ConnectionTracker extends React.Component {
                     <p className="popover-text">Personnal wallet not up to date</p>
                 </div>;
         }
+        
+        let event_color;
+        let event_icon;
+        let event_content;
+        switch (this.props.csapi.event_status) {
+            case 'IDLE':
+                event_color = 'green';
+                event_icon = 'calendar';
+                event_content = <div>
+                    <p className="popover-text">Events listing up to date</p>
+                </div>;
+                break ;
+            case 'NONE':
+                event_color = 'gray';
+                event_icon = 'calendar';
+                event_content = <div>
+                    <p className="popover-text">Events listing not up to date</p>
+                </div>;
+                break ;
+            case 'FETCHING':
+                event_color = 'orange';
+                event_icon = 'loading';
+                event_content = <div>
+                    <p className="popover-text">Updating events listing</p>
+                </div>;
+                break ;
+            default:
+                event_color = 'gray';
+                event_icon = 'calendar';
+                event_content = <div>
+                    <p className="popover-text">Events listing not up to date</p>
+                </div>;
+        }
 
         let public_color = 'gray';
         let public_content = <div>
@@ -195,6 +228,9 @@ export class _ConnectionTracker extends React.Component {
                             </Popover>
                             <Popover placement="bottom" content={wallet_content} trigger="hover">
                                 <Icon type={wallet_icon} style={{fontSize: '20px', color: wallet_color, marginLeft: '5px'}}/>
+                            </Popover>
+                            <Popover placement="bottom" content={event_content} trigger="hover">
+                                <Icon type={event_icon} style={{fontSize: '20px', color: event_color, marginLeft: '5px'}}/>
                             </Popover>
                         </div>
                     </Card>
