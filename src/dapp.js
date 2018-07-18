@@ -8,12 +8,13 @@ import Ticket721Event from '../dist/contracts/Ticket721Event';
 import {FeedNotifications} from "./components/feed-notifications";
 import {VortexGate, VortexWeb3Loading, VortexWeb3Loaded, VortexWeb3LoadError, VortexWeb3NetworkError, VortexWeb3Locked, VortexMetamaskLoader} from 'vort_x-components';
 import Web3 from 'web3';
-import * as Manifest from '../manifest.js';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import {Home} from "./views/home";
 import {Sale} from "./views/sale";
 import {Account} from "./views/account";
+import {PublicTicket} from "./views/public_ticket";
+import {VerifiedTicket} from "./views/verified_ticket";
 
 import {ConnectionTracker} from "./components/connection_tracker";
 
@@ -112,13 +113,15 @@ class App extends React.Component {
 
                 <VortexWeb3Loaded>
                     <FeedNotifications>
-                        <ManifestLoader manifest={Manifest}>
+                        <ManifestLoader>
                             <BrowserRouter>
                                 <ConnectionTracker>
                                     <Switch>
                                         <Route exact path="/" component={Home}/>
                                         <Route path="/sale/:address" component={Sale}/>
                                         <Route path="/account/:address" component={Account}/>
+                                        <Route path="/ticket/public/:id" component={PublicTicket}/>
+                                        <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
                                     </Switch>
                                 </ConnectionTracker>
                             </BrowserRouter>

@@ -1,0 +1,18 @@
+.account_title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 200;
+    font-size: 30px;
+    background-color: #131313;
+    color: #ffffff;
+}
+
+.section_title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 40px;
+}
+
+.profile-logo {
+    float: left;
+}
+
