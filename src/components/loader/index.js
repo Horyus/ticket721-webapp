@@ -1,6 +1,6 @@
 import React from 'react';
 import Lottie from 'react-lottie';
-import * as Options from './animation.json';
+import * as Options from './animation';
 
 export class Loader extends React.Component {
     render() {

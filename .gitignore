@@ -1,6 +1,7 @@
 dist
+webpack_dist
 node_modules
 .embark
 .idea
 chains.json
-manifest.json
+manifest.js

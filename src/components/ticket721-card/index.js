@@ -5,7 +5,20 @@ import {IPFSLoad, getContract, callContract} from 'vort_x';
 import './index.css';
 import Web3Utils from 'web3-utils';
 import Lottie from 'react-lottie';
-import * as Options from './animation.json';
+import * as Options from './animation';
+import {withRouter} from 'react-router-dom';
+
+const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
+
+function filterHash(uri) {
+    if (!uri)
+        return uri;
+    let match;
+    if ((match = uri.match(IpfsGatewayRegexp))) {
+        return match[5];
+    }
+    return uri;
+}
 
 class _Ticket721Card extends React.Component {
     constructor(props) {
@@ -31,8 +44,9 @@ class _Ticket721Card extends React.Component {
         if (this.props.recovered_infos) {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
-                this.image_source = "https://gateway.ipfs.io/ipfs/" + parsed.image;
-                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={this.image_source}/>}
+                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={parsed.image} onClick={() => {
+                    this.props.history.push('/sale/' + this.props.address)
+                }}/>}
                               style={{
                                   width: 300,
                                   height: 300,
@@ -73,15 +87,13 @@ class _Ticket721Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (state.contracts.Ticket721Event[ownProps.address]) {
+    if (state.contracts.Ticket721Event[ownProps.address] && ownProps.event) {
         return {
             ...ownProps,
-            instance: getContract(state, "Ticket721Event", ownProps.address),
-            name: callContract(getContract(state, "Ticket721Event", ownProps.address), "name"),
-            price: callContract(getContract(state, "Ticket721Event", ownProps.address), "getMintPrice"),
-            infos: callContract(getContract(state, "Ticket721Event", ownProps.address), "getData"),
-            recovered_infos: state.ipfs[callContract(getContract(state, "Ticket721Event", ownProps.address), "getData")]
-
+            name: ownProps.event.name,
+            price: callContract(getContract(state, "Ticket721Event", ownProps.event.address), "getMintPrice"),
+            infos: filterHash(ownProps.event.infos),
+            recovered_infos: state.ipfs[filterHash(ownProps.event.infos)]
         };
     } else {
         return {
@@ -96,4 +108,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export const Ticket721Card = connect(_Ticket721Card, mapStateToProps, mapDispatchToProps);
+export const Ticket721Card = withRouter(connect(_Ticket721Card, mapStateToProps, mapDispatchToProps));

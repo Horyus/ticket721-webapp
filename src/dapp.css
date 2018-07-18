@@ -4,4 +4,9 @@
     font-size: 40px;
     text-align: center;
     margin-top: 10%;
+    color: #ffffff;
+}
+
+body {
+    background-color: #131313;
 }
