@@ -8,11 +8,13 @@ import {
 } from "./csapi.actions";
 import {T721CSAPI} from "ticket721-csapi";
 import {FeedNewError} from 'vort_x';
+import cookie from 'react-cookies';
 
-function* csapi_call_connect(instance) {
+function* csapi_call_connect(instance, coinbase) {
     return eventChannel((emit) => {
         instance.connect().then(connected => {
-            emit(CsApiConnected(connected));
+            cookie.save('t721jwt' + coinbase.toLowerCase(), connected);
+            emit(CsApiConnected(!!connected));
             emit(END);
         }).catch(e => {
             emit(FeedNewError(e, e.message, "[csapi.sagas.js][csapi_call_connect] Trying to connect"));
@@ -25,10 +27,12 @@ function* csapi_call_connect(instance) {
 }
 
 function* call_connect(action) {
-    const csapi = (yield select()).csapi;
+    const state = (yield select());
+    const csapi = state.csapi;
+    const coinbase = state.web3.coinbase;
 
     if (csapi.status === 'DISCONNECTED') {
-        const call_connect = yield call(csapi_call_connect, csapi.instance);
+        const call_connect = yield call(csapi_call_connect, csapi.instance, coinbase);
 
         try {
             while (true) {
@@ -66,6 +70,37 @@ function* csapi_call_registered(instance) {
         })
     });
 }
+function* csapi_call_check_token(instance, coinbase) {
+    return eventChannel((emit) => {
+        let jwt;
+        if ((jwt = cookie.load('t721jwt' + coinbase.toLowerCase()))) {
+            instance.check_token(jwt).then(result => {
+                if (result) {
+                    emit(CsApiConnected(result));
+                    emit(END);
+                }
+            })
+        } else {
+            emit(END);
+        }
+        return (() => {});
+    });
+}
+
+function* call_check_token(action) {
+    const coinbase = (yield select()).web3.coinbase;
+
+    const call_check = yield call(csapi_call_check_token, action.instance, coinbase);
+
+    try {
+        while (true) {
+            const event = yield take(call_check);
+            yield put(event);
+        }
+    } finally {
+        call_check.close();
+    }
+}
 
 function* call_loaded(action) {
     const call_registered = yield call(csapi_call_registered, action.instance);
@@ -94,11 +129,12 @@ function* call_registered(action) {
     }
 }
 
-function* csapi_call_register(instance) {
+function* csapi_call_register(instance, coinbase) {
     return (eventChannel((emit) => {
 
         instance.register().then(connected => {
-            emit(CsApiConnected(connected));
+            cookie.save('t721jwt' + coinbase.toLowerCase(), connected);
+            emit(CsApiConnected(!!connected));
             emit(END);
         }).catch(e => {
             emit(END);
@@ -109,10 +145,12 @@ function* csapi_call_register(instance) {
 }
 
 function* call_register(action) {
-    const csapi = (yield select()).csapi;
+    const state = (yield select());
+    const csapi = state.csapi;
+    const coinbase = state.web3.coinbase;
 
     if (csapi.status === 'NOT_REGISTERED') {
-        const call_register = yield call(csapi_call_register, csapi.instance);
+        const call_register = yield call(csapi_call_register, csapi.instance, coinbase);
 
         try {
             while (true) {
@@ -228,6 +266,7 @@ export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, fetch_events);
+    yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_check_token);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTERED, call_registered);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);

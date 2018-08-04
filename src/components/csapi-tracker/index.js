@@ -4,6 +4,9 @@ import {connect} from 'vort_x-components'
 
 import './index.css';
 import {CsApiCallConnect, CsApiCallRegister} from "../../redux/csapi/csapi.actions";
+import { Nav, NavIcon, NavText , withRR4} from 'react-sidenav';
+import SvgIcon from 'react-icons-kit';
+import { chevronsRight, logOut, edit} from 'react-icons-kit/feather';
 
 
 export class _CsApiTracker extends React.Component {
@@ -50,25 +53,36 @@ export class _CsApiTracker extends React.Component {
 
         if (title === 'not registered')
             return (
-                <Card className="csapi-tracker">
-                    <div style={{textAlign: 'center'}}>
-                        <p>You are not registered</p>
-                        <Button type="primary" onClick={this.run_register}>Register</Button>
-                    </div>
-                </Card>
+                <div onClick={this.run_register}>
+                    <Nav id="connect" >
+                        <NavIcon>
+                            <SvgIcon size={20} icon={edit}/>
+                        </NavIcon>
+                        <NavText><p className="navbar_action">register</p></NavText>
+                    </Nav>
+                </div>
             );
         else if (title === 'disconnected')
             return (
-                <Card className="csapi-tracker">
-                    <div style={{textAlign: 'center'}}>
-                        <p>You are not connected</p>
-                        <Button type="primary" onClick={this.run_connect}>Connect</Button>
-                    </div>
-                </Card>
+                <div onClick={this.run_connect}>
+                    <Nav id="connect" >
+                        <NavIcon>
+                            <SvgIcon size={20} icon={chevronsRight}/>
+                        </NavIcon>
+                        <NavText><p className="navbar_action">log in</p></NavText>
+                    </Nav>
+                </div>
             );
         else
             return (
-                <div></div>
+                <div onClick={this.run_connect}>
+                    <Nav id="connect" >
+                        <NavIcon>
+                            <SvgIcon size={20} icon={logOut}/>
+                        </NavIcon>
+                        <NavText><p className="navbar_action">log out</p></NavText>
+                    </Nav>
+                </div>
             );
     }
 }

@@ -9,7 +9,7 @@ class _Home extends React.Component {
     render() {
         return (
                 <div style={{
-                    width: "100%",
+                    width: "98%",
                     minHeight: "110%",
                     backgroundColor: '#ffffff'
                 }}>
