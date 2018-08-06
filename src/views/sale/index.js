@@ -47,9 +47,12 @@ export class _Sale extends React.Component {
                 }}>
                     <Title csapi_infos={this.props.csapi_sale_infos}/>
                     <Row style={{
-                        height: window.innerWidth * 0.25
-                    }}>
-                        <Col span={9}>
+                        height: window.innerWidth * 0.25,
+                        width: '100%'
+                    }}
+                    gutter={20}>
+                        <Col span={8} style={{
+                        }}>
                             {
                                 this.props.infos && this.props.infos.longitude && this.props.infos.latitude
                                     ?
@@ -58,7 +61,8 @@ export class _Sale extends React.Component {
                                     <div/>
                             }
                         </Col>
-                        <Col span={9}>
+                        <Col span={10} style={{
+                        }}>
                             {
                                 this.props.infos
                                     ?
@@ -69,8 +73,18 @@ export class _Sale extends React.Component {
                                         address_elements={this.state.address_elements}
                                     />
                                     :
-                                    <div></div>
+                                    null
                             }
+                        </Col>
+                        <Col span={6} style={{
+                        }}>
+                            <div style={{
+                                width: '100%',
+                                height: '100%',
+                                backgroundColor: 'red'
+                            }}>
+
+                            </div>
                         </Col>
                     </Row>
                 </div>

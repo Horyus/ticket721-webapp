@@ -7,14 +7,14 @@ export class Minimap extends React.Component {
     render() {
         return (
             <div style={{
-                width: window.innerWidth * 0.25,
-                height: window.innerWidth * 0.25
+                width: '100%',
+                height: '100%'
             }}>
                 <Map
                     className="sale_minimap_map"
                     style={{
-                        width: window.innerWidth * 0.25,
-                        height: window.innerWidth * 0.25,
+                        width: '100%',
+                        height: '100%'
                     }}
                     center={this.props.position} zoom={15}
                 >

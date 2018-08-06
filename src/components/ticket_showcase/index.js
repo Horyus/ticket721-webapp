@@ -12,9 +12,10 @@ export default function Hello() {
     return <DayPicker />;
 }
 
+import './index.css';
+
 const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
 
-import './index.css';
 
 function filterHash(uri) {
     if (!uri)
@@ -146,7 +147,7 @@ class _TicketShowcase extends React.Component {
                                     {
                                         this.props.infos ?
                                             <div >
-                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%'}}/>
+                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%', borderTopLeftRadius: '10px', borderBottomRightRadius: '10px'}}/>
                                                 <hr style={{width: '50%', marginBottom: '15px', marginTop: '15px', opacity: 0.2}}/>
                                             </div>
                                             :
