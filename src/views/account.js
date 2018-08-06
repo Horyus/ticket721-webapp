@@ -17,12 +17,17 @@ export class _Account extends React.Component {
         super(props);
         this.account = Web3Utils.toChecksumAddress(this.props.match.params.address);
         this.updateJdenticon();
-        for (let v_idx = 0; v_idx < this.props.verified_wallet.length; ++v_idx) {
+        const lengths = [this.verified_tickets.length, this.public_tickets.length];
+        for (let v_idx = lengths[0]; v_idx < this.props.verified_wallet.length; ++v_idx) {
+            console.log('lol');
             this.verified_tickets.push(<Ticket721UniqueCard id={this.props.verified_wallet[v_idx]} key={v_idx} />)
         }
-        for (let p_idx = 0; p_idx < this.props.public_wallet.length; ++p_idx) {
+        console.log(this.props);
+        for (let p_idx = lengths[1]; p_idx < this.props.public_wallet.length; ++p_idx) {
+            console.log('lol');
             this.public_tickets.push(<Ticket721UniqueCard public={true} id={this.props.public_wallet[p_idx]} key={p_idx + this.props.verified_wallet.length}/>)
         }
+        console.log(this.public_tickets);
     }
 
     updateJdenticon() {
@@ -40,6 +45,19 @@ export class _Account extends React.Component {
             };
             jdenticon();
         }
+    }
+
+    componentWillUpdate(newProps) {
+        const lengths = [this.verified_tickets.length, this.public_tickets.length];
+        console.log(lengths);
+        console.log(this.props);
+        for (let v_idx = lengths[0]; v_idx < newProps.verified_wallet.length; ++v_idx) {
+            this.verified_tickets.push(<Ticket721UniqueCard id={newProps.verified_wallet[v_idx]} key={v_idx} />)
+        }
+        for (let p_idx = lengths[1]; p_idx < newProps.public_wallet.length; ++p_idx) {
+            this.public_tickets.push(<Ticket721UniqueCard public={true} id={newProps.public_wallet[p_idx]} key={p_idx + newProps.verified_wallet.length}/>)
+        }
+        return (lengths[0] !== this.verified_tickets.length || lengths[1] !== this.public_tickets.length);
     }
 
     render() {

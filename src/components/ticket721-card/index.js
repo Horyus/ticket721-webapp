@@ -87,11 +87,11 @@ class _Ticket721Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (state.contracts.Ticket721Event[ownProps.address] && ownProps.event) {
+    if (ownProps.event) {
         return {
             ...ownProps,
             name: ownProps.event.name,
-            price: callContract(getContract(state, "Ticket721Event", ownProps.event.address), "getMintPrice"),
+            price: callContract(getContract(state, "Ticket721Controller", ownProps.event.address, true), "getMintPrice"),
             infos: filterHash(ownProps.event.infos),
             recovered_infos: state.ipfs[filterHash(ownProps.event.infos)]
         };

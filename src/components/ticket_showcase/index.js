@@ -300,13 +300,13 @@ const mapStateToProps = (state, ownProps) => {
     }
     return {
         ...ownProps,
-        infos: hash ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined,
+        infos: hash ? (getIPFSHash(state, hash) ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined) : undefined,
         event,
         owner,
-        mint_price: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getMintPrice"): undefined,
-        sell_price: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
-        begin: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getEventBegin"): undefined,
-        end: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getEventEnd"): undefined,
+        mint_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getMintPrice"): undefined,
+        sell_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
+        begin: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventBegin"): undefined,
+        end: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventEnd"): undefined,
 
     }
 };
