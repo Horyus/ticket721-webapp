@@ -21,11 +21,9 @@ export class _Account extends React.Component {
         for (let v_idx = lengths[0]; v_idx < this.props.verified_wallet.length; ++v_idx) {
             this.verified_tickets.push(<Ticket721UniqueCard id={this.props.verified_wallet[v_idx]} key={v_idx} />)
         }
-        console.log(this.props);
         for (let p_idx = lengths[1]; p_idx < this.props.public_wallet.length; ++p_idx) {
             this.public_tickets.push(<Ticket721UniqueCard public={true} id={this.props.public_wallet[p_idx]} key={p_idx + this.props.verified_wallet.length}/>)
         }
-        console.log(this.public_tickets);
     }
 
     updateJdenticon() {
@@ -47,8 +45,6 @@ export class _Account extends React.Component {
 
     componentWillUpdate(newProps) {
         const lengths = [this.verified_tickets.length, this.public_tickets.length];
-        console.log(lengths);
-        console.log(this.props);
         for (let v_idx = lengths[0]; v_idx < newProps.verified_wallet.length; ++v_idx) {
             this.verified_tickets.push(<Ticket721UniqueCard id={newProps.verified_wallet[v_idx]} key={v_idx} />)
         }

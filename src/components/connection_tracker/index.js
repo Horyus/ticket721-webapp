@@ -2,8 +2,8 @@ import React from 'react';
 import './index.css';
 import {getContract, callContract, getEvents} from 'vort_x';
 import {connect} from 'vort_x-components';
-import {Card, Icon, Popover} from 'antd'
-import renderHTML from 'react-render-html';
+import {InformationFeed} from "../information_feed";
+import {Popover} from 'antd'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
@@ -78,9 +78,6 @@ export class _ConnectionTracker extends React.Component {
     }
 
     render() {
-
-        console.log("EVENTS", this.props.verified_mint_events);
-        console.log("EVENTS", this.props.public_mint_events);
 
         let csapi_color;
         let csapi_content;
@@ -218,7 +215,7 @@ export class _ConnectionTracker extends React.Component {
         return (
             <div>
                 <div className="left-div">
-                    <div style={{background: '#ffffff', color: '#202020', width: '99%', height: '100%', float: 'left'}}>
+                    <div style={{background: '#ffffff', color: '#202020', width: '99%', height: '80%', float: 'left'}}>
 
                         <SideNav highlightColor='#fdfdfd' highlightBgColor='#202020' defaultSelected=''>
 
@@ -264,7 +261,15 @@ export class _ConnectionTracker extends React.Component {
                             </SeparatorTitle>
 
                             <CsApiTracker/>
+
+                            <SeparatorTitle>
+                            </SeparatorTitle>
                         </SideNav>
+                        <div style={{
+                            width: '100%'
+                        }}>
+                    </div>
+                        <InformationFeed/>
                     </div>
                     <div style={{background: '#121212', width: '1%', height: '100%', float: 'left'}}/>
                 </div>

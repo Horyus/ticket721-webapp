@@ -20,7 +20,6 @@ export class _BuyWidget extends React.Component {
     }
 
     render() {
-        console.log(Web3Util.fromWei(this.props.mint_price, 'ether'));
         return (
             <div className="sale_buy_card" style={{width: '100%'}}>
                 {

@@ -12,7 +12,6 @@ class _Description extends React.Component {
         let event_end;
         if (this.props.csapi_infos && this.props.csapi_infos.length && this.props.csapi_infos[0].event_end)
             event_end = this.props.csapi_infos[0].event_end;
-        console.log(this.props);
         return (
             <div className="sale_description_card" style={{
             }}>
@@ -23,8 +22,8 @@ class _Description extends React.Component {
                             <img src={this.props.ipfs_infos.image} style={{
                                 width: '80%',
                                 marginLeft: '10%',
-                                borderTopLeftRadius: '10px',
-                                borderBottomRightRadius: '10px'
+                                borderTopLeftRadius: '14px',
+                                borderBottomRightRadius: '14px'
                             }}/>
                         </div>
                         :
@@ -83,8 +82,6 @@ function filterHash(uri) {
 
 const mapStateToProps = (state, ownProps) => {
     const raw_infos = (ownProps.csapi_infos && ownProps.csapi_infos.length && ownProps.csapi_infos[0].infos) ? getIPFSHash(state, filterHash(ownProps.csapi_infos[0].infos)) : undefined;
-    console.log(raw_infos);
-    console.log(raw_infos.toString());
     return {
         ...ownProps,
         ipfs_infos: raw_infos && raw_infos.content ? JSON.parse(raw_infos.content.toString()) : undefined

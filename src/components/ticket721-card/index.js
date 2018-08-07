@@ -44,7 +44,7 @@ class _Ticket721Card extends React.Component {
         if (this.props.recovered_infos) {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
-                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={parsed.image} onClick={() => {
+                return (<Card bordered={false} cover={<img alt="example" className="card_image" style={{height: '180px'}} src={parsed.image} onClick={() => {
                     this.props.history.push('/sale/' + this.props.address)
                 }}/>}
                               style={{

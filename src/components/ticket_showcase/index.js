@@ -45,7 +45,6 @@ class _TicketShowcase extends React.Component {
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat).then((response) => {
             return response.json();
         }).then((json) => {
-            console.log(json);
             this.setState({
                 address: json.display_name,
                 address_elements: json.address
@@ -81,7 +80,6 @@ class _TicketShowcase extends React.Component {
             price: 32
         }];
         if (this.position) {
-            console.log(this.position);
             let modifiers;
             return (
                 <div>
@@ -147,7 +145,7 @@ class _TicketShowcase extends React.Component {
                                     {
                                         this.props.infos ?
                                             <div >
-                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%', borderTopLeftRadius: '10px', borderBottomRightRadius: '10px'}}/>
+                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%', borderTopLeftRadius: '14px', borderBottomRightRadius: '14px'}}/>
                                                 <hr style={{width: '50%', marginBottom: '15px', marginTop: '15px', opacity: 0.2}}/>
                                             </div>
                                             :

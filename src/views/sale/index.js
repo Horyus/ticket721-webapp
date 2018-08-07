@@ -22,7 +22,6 @@ export class _Sale extends React.Component {
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat).then((response) => {
             return response.json();
         }).then((json) => {
-            console.log(json);
             this.setState({
                 address: json.display_name,
                 address_elements: json.address
@@ -34,8 +33,6 @@ export class _Sale extends React.Component {
 
         if (this.props.infos && this.props.infos.longitude && this.props.infos.latitude && !this.address_fetch)
             this.reverseAddress(this.props.infos.longitude, this.props.infos.latitude);
-
-        console.log(this.props);
 
         return (
             <div style={{

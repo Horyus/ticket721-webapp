@@ -1,0 +1,13 @@
+.information_feed_tx_icon {
+    float: left;
+    font-size: 20px;
+    margin: 0;
+}
+
+.information_feed_tx_info {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 17px;
+    margin: 0;
+}
+

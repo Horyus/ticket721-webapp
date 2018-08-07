@@ -39,7 +39,6 @@ export class _Ticket721UniqueCard extends React.Component {
             this.image = parsed.image;
             this.name = parsed.name;
         }
-        console.log(this.props);
         if (!this.image || !this.name) {
             const lottieOptions = {
                 loop: true,
@@ -73,7 +72,7 @@ export class _Ticket721UniqueCard extends React.Component {
                 onClick={() => {
                     this.props.history.push('/ticket/' + (this.props.public ? "public/" : "verified/") + this.props.id);
                 }}>
-                <img src={this.image} style={{width: '250', maxHeight: '250'}}/>
+                <img className="ticket_image" src={this.image} style={{width: '250px', maxHeight: '250', minHeight: '150', overflow: 'hidden'}}/>
                 {
                     this.name
                         ?
