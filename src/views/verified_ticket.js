@@ -1,5 +1,6 @@
 import React from 'react';
 import {ConnectionTracker} from "../components/connection_tracker";
+import {TicketShowcase} from "../components/ticket_showcase";
 
 export class VerifiedTicket extends React.Component {
     constructor(props) {
@@ -15,9 +16,7 @@ export class VerifiedTicket extends React.Component {
                 backgroundColor: '#ffffff'
             }}>
                 <div>
-                    <h2>
-                        SALE
-                    </h2>
+                    <TicketShowcase contract="Ticket721" id={this.props.match.params.id}/>
                 </div>
             </div>
         )

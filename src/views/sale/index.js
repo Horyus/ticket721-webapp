@@ -5,6 +5,7 @@ import {Title} from './title';
 import {Minimap} from "./minimap";
 import {Description} from "./description";
 import {Row, Col} from 'antd';
+import {BuyWidget} from "./buy_widget";
 
 export class _Sale extends React.Component {
     constructor(props) {
@@ -50,7 +51,7 @@ export class _Sale extends React.Component {
                         height: window.innerWidth * 0.25,
                         width: '100%'
                     }}
-                    gutter={20}>
+                         gutter={20}>
                         <Col span={8} style={{
                         }}>
                             {
@@ -78,13 +79,17 @@ export class _Sale extends React.Component {
                         </Col>
                         <Col span={6} style={{
                         }}>
-                            <div style={{
-                                width: '100%',
-                                height: '100%',
-                                backgroundColor: 'red'
-                            }}>
-
-                            </div>
+                            {
+                                this.props.infos ?
+                                    <BuyWidget
+                                        remaining_seats={this.props.seats_left}
+                                        total_seats={this.props.ticket_cap}
+                                        instance={this.props.sale_contract}
+                                        mint_price={this.props.mint_price}
+                                    />
+                                    :
+                                    null
+                            }
                         </Col>
                     </Row>
                 </div>
@@ -113,7 +118,10 @@ const mapStateToProps = (state, ownProps) => {
         ...ownProps,
         sale_contract: instance,
         infos: content,
-        csapi_sale_infos: state.csapi.events.filter((elem) => {return (elem.address.toLowerCase() === ownProps.match.params.address.toLowerCase())})
+        csapi_sale_infos: state.csapi.events.filter((elem) => {return (elem.address.toLowerCase() === ownProps.match.params.address.toLowerCase())}),
+        mint_price: callContract(instance, 'getMintPrice'),
+        seats_left: callContract(instance, 'getRemainingTickets'),
+        ticket_cap: callContract(instance, 'getTicketCap')
     }
 };
 

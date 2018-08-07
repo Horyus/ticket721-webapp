@@ -95,7 +95,7 @@ export class _Ticket721UniqueCard extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (ownProps.public)
+    if (ownProps.public) {
         return {
             ...ownProps,
             uri: getContract(state, "Ticket721Public") ? filterHash(getContract(state, "Ticket721Public").vortexMethods.tokenURI.data(ownProps.id)) : undefined,
@@ -107,8 +107,19 @@ const mapStateToProps = (state, ownProps) => {
                 :
                 undefined)
         };
+    } else {
     return {
-        ...ownProps
+        ...ownProps,
+        uri: getContract(state, "Ticket721") ? filterHash(getContract(state, "Ticket721").vortexMethods.tokenURI.data(ownProps.id)) : undefined,
+        data: (getContract(state, "Ticket721")
+            ?
+            (filterHash(getContract(state, "Ticket721").vortexMethods.tokenURI.data(ownProps.id))
+                ? getIPFSHash(state, filterHash(getContract(state, "Ticket721").vortexMethods.tokenURI.data(ownProps.id)))
+                : undefined)
+            :
+            undefined)
+    };
+
     }
 };
 

@@ -19,12 +19,10 @@ export class _Account extends React.Component {
         this.updateJdenticon();
         const lengths = [this.verified_tickets.length, this.public_tickets.length];
         for (let v_idx = lengths[0]; v_idx < this.props.verified_wallet.length; ++v_idx) {
-            console.log('lol');
             this.verified_tickets.push(<Ticket721UniqueCard id={this.props.verified_wallet[v_idx]} key={v_idx} />)
         }
         console.log(this.props);
         for (let p_idx = lengths[1]; p_idx < this.props.public_wallet.length; ++p_idx) {
-            console.log('lol');
             this.public_tickets.push(<Ticket721UniqueCard public={true} id={this.props.public_wallet[p_idx]} key={p_idx + this.props.verified_wallet.length}/>)
         }
         console.log(this.public_tickets);

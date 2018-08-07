@@ -1,0 +1,45 @@
+.sale_buy_card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    border-radius: 7px;
+    float: left;
+    padding: 15px;
+}
+
+.sale_buy_card:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+}
+
+.sale_buy_count_box {
+    text-align: center;
+}
+
+.sale_buy_count_title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.sale_buy_count_amount {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 100;
+    font-size: 40px;
+    margin: 0;
+}
+
+.sale_buy_price {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 300;
+    font-size: 30px;
+    margin: 0;
+}
+
+.sale_buy_price_box {
+    text-align: center;
+}
+
+.sale_buy_button_box {
+    text-align: center;
+}
+

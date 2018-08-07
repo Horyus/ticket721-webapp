@@ -81,6 +81,11 @@ class App extends React.Component {
                         Ticket721Controller: {
                             abi: Ticket721Controller.abiDefinition,
                             deployed_bytecode: Ticket721Controller.runtimeBytecode
+                        },
+
+                        Ticket721Event: {
+                            abi: Ticket721Event.abiDefinition,
+                            deployed_bytecode: Ticket721Event.runtimeBytecode
                         }
 
                     }

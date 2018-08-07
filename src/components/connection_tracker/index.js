@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import {getContract, callContract} from 'vort_x';
+import {getContract, callContract, getEvents} from 'vort_x';
 import {connect} from 'vort_x-components';
 import {Card, Icon, Popover} from 'antd'
 import renderHTML from 'react-render-html';
@@ -54,6 +54,14 @@ export class _ConnectionTracker extends React.Component {
         }
     }
 
+    shouldComponentUpdate(newProps) {
+        if (this.props.public_mint_events.length !== newProps.public_mint_events.length)
+            this.props.fetchWallets();
+        else if (this.props.verified_mint_events.length !== newProps.verified_mint_events.length)
+            this.props.fetchWallets();
+        return true;
+    }
+
     componentDidUpdate() {
         if (!this.initial_fetch && this.props.public_wallet_live_count && this.props.verified_wallet_live_count && this.props.csapi.wallet_status === 'IDLE') {
             if ((parseInt(this.props.public_wallet_live_count) !== this.props.csapi.public_wallet.length)
@@ -70,6 +78,9 @@ export class _ConnectionTracker extends React.Component {
     }
 
     render() {
+
+        console.log("EVENTS", this.props.verified_mint_events);
+        console.log("EVENTS", this.props.public_mint_events);
 
         let csapi_color;
         let csapi_content;
@@ -280,6 +291,8 @@ const mapStateToProps = (state, ownProps) => {
         backlink: state.backlink,
         public_wallet_live_count: callContract(getContract(state, 'Ticket721Public'), 'balanceOf', state.web3.coinbase),
         verified_wallet_live_count: callContract(getContract(state, 'Ticket721'), 'balanceOf', state.web3.coinbase),
+        public_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
+        verified_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true),
         coinbase: state.web3.coinbase
     };
 };
