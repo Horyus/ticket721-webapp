@@ -1,4 +1,4 @@
-import { call, put, select, takeEvery, take, takeLatest } from 'redux-saga/effects'
+import { call, put, select, takeEvery, take } from 'redux-saga/effects'
 import {eventChannel, END} from 'redux-saga';
 import {
     CsApiActionTypes,
@@ -195,20 +195,6 @@ function* fetch_events(action) {
     }
 }
 
-function* csapi_call_fetch_wallets(instance) {
-    return eventChannel((emit) => {
-        instance.fetch_wallets().then(wallets => {
-            emit(CsApiFetchWalletsDone(wallets.public_wallet, wallets.verified_wallet));
-            emit(END);
-        }).catch(e => {
-            emit(END);
-        });
-        return (() => {
-
-        })
-    });
-}
-
 function* csapi_call_get_infos(instance) {
     return eventChannel((emit) => {
         emit(CsApiGetInfos());
@@ -243,25 +229,6 @@ function* fetch_infos(action) {
     }
 }
 
-function* fetch_wallets(action) {
-    const csapi = (yield select()).csapi;
-
-    if (csapi.status === 'CONNECTED') {
-        const call_fetch_wallets = yield call(csapi_call_fetch_wallets, csapi.instance);
-
-        try {
-            while (true) {
-                const event = yield take(call_fetch_wallets);
-                yield put(event);
-            }
-        } finally {
-            call_fetch_wallets.close();
-        }
-    } else {
-        console.warn("Called fetch_wallets while in wrong status")
-    }
-}
-
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
@@ -271,5 +238,4 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
-    yield takeEvery(CsApiActionTypes.CSAPI_FETCH_WALLETS, fetch_wallets);
 }

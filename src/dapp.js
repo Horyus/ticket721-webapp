@@ -25,7 +25,9 @@ import './css/pure-min.css';
 import {Loader} from "./components/loader";
 import {search} from "./redux/search/search.reducers";
 import {csapi} from './redux/csapi/csapi.reducers';
+import {wallet} from "./redux/wallet/wallet.reducers";
 import {CsApiSagas} from "./redux/csapi/csapi.sagas";
+import {WalletSagas} from "./redux/wallet/wallet.sagas";
 
 import './dapp.css';
 
@@ -39,17 +41,22 @@ class App extends React.Component {
                 status: 'DISCONNECTED',
                 wallet_status: 'NONE',
                 event_status: 'NONE',
-                public_wallet: [],
-                verified_wallet: [],
                 events: []
+            },
+            wallet: {
+                status: 'IDLE',
+                public_wallet: [],
+                verified_wallet: []
             }
         };
         this.reducers = {
             search,
-            csapi
+            csapi,
+            wallet
         };
         this.sagas = [
-            CsApiSagas
+            CsApiSagas,
+            WalletSagas
         ]
     }
 
@@ -120,7 +127,7 @@ class App extends React.Component {
                     <FeedNotifications>
                         <BrowserRouter>
                             <ConnectionTracker>
-                                <Switch>
+                                <Switch onChange={() => {console.log('olele')}}>
                                     <Route exact path="/" component={Home}/>
                                     <Route path="/sale/:address" component={Sale}/>
                                     <Route path="/account/:address" component={Account}/>

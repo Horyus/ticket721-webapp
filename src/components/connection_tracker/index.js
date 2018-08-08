@@ -18,6 +18,7 @@ import {CsApiTracker} from "../csapi-tracker";
 import {CsApiFetchWallets} from "../../redux/csapi/csapi.actions";
 
 import styled from 'styled-components';
+import {WalletFetch} from "../../redux/wallet/wallet.actions";
 
 const SeparatorTitleContainer = styled.div`
     font-size: 14px;
@@ -55,18 +56,23 @@ export class _ConnectionTracker extends React.Component {
     }
 
     shouldComponentUpdate(newProps) {
-        if (this.props.public_mint_events.length !== newProps.public_mint_events.length)
+        if (this.props.public_mint_events.length !== newProps.public_mint_events.length) {
             this.props.fetchWallets();
-        else if (this.props.verified_mint_events.length !== newProps.verified_mint_events.length)
+            this.props.test_fetchWallets();
+        }
+        else if (this.props.verified_mint_events.length !== newProps.verified_mint_events.length) {
             this.props.fetchWallets();
+            this.props.test_fetchWallets();
+        }
         return true;
     }
 
     componentDidUpdate() {
-        if (!this.initial_fetch && this.props.public_wallet_live_count && this.props.verified_wallet_live_count && this.props.csapi.wallet_status === 'IDLE') {
-            if ((parseInt(this.props.public_wallet_live_count) !== this.props.csapi.public_wallet.length)
-                || (parseInt(this.props.verified_wallet_live_count) !== this.props.csapi.verified_wallet.length)) {
+        if (!this.initial_fetch && this.props.public_wallet_live_count && this.props.verified_wallet_live_count && this.props.wallet.status === 'IDLE') {
+            if ((parseInt(this.props.public_wallet_live_count) !== this.props.wallet.public_wallet.length)
+                || (parseInt(this.props.verified_wallet_live_count) !== this.props.wallet.verified_wallet.length)) {
                 this.props.fetchWallets();
+                this.props.test_fetchWallets();
             }
             this.initial_fetch = true;
         }
@@ -125,19 +131,12 @@ export class _ConnectionTracker extends React.Component {
         let wallet_color;
         let wallet_icon;
         let wallet_content;
-        switch (this.props.csapi.wallet_status) {
+        switch (this.props.wallet.status) {
             case 'IDLE':
                 wallet_color = 'green';
                 wallet_icon = layers;
                 wallet_content = <div>
                     <p className="popover-text">personnal wallet up to date</p>
-                </div>;
-                break ;
-            case 'NONE':
-                wallet_color = 'gray';
-                wallet_icon = layers;
-                wallet_content = <div>
-                    <p className="popover-text">personnal wallet not up to date</p>
                 </div>;
                 break ;
             case 'FETCHING':
@@ -294,6 +293,7 @@ const mapStateToProps = (state, ownProps) => {
         ...ownProps,
         csapi: state.csapi,
         backlink: state.backlink,
+        wallet: state.wallet,
         public_wallet_live_count: callContract(getContract(state, 'Ticket721Public'), 'balanceOf', state.web3.coinbase),
         verified_wallet_live_count: callContract(getContract(state, 'Ticket721'), 'balanceOf', state.web3.coinbase),
         public_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
@@ -304,7 +304,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const  mapDispatchToProps = (dispatch) => {
     return {
-        fetchWallets: () => {dispatch(CsApiFetchWallets())}
+        fetchWallets: () => {dispatch(CsApiFetchWallets())},
+        test_fetchWallets: () => {dispatch(WalletFetch())}
     }
 };
 

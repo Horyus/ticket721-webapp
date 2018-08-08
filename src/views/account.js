@@ -107,8 +107,8 @@ export class _Account extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         ...ownProps,
-        public_wallet: state.csapi.public_wallet,
-        verified_wallet: state.csapi.verified_wallet
+        public_wallet: state.wallet.public_wallet,
+        verified_wallet: state.wallet.verified_wallet
     }
 };
 

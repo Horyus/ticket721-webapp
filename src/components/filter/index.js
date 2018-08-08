@@ -16,7 +16,7 @@ class _Filter extends React.Component {
     }
 
     render() {
-        return (<input className="main_input" placeholder="🔎" type="text" onChange={this.onChange}/>)
+        return (<input value={this.props.search} className="main_input" placeholder="🔎" type="text" onChange={this.onChange}/>)
     }
 }
 
