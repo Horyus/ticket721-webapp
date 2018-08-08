@@ -4,8 +4,11 @@
   "description": "",
   "scripts": {
     "start": "embark run --nodashboard",
-    "build": "webpack --config webpack.config.js --display verbose --mode development --env.API_URL=http://127.0.0.1:8080 && cp ./src/index.html ./webpack_dist/",
-    "serve": "webpack-dev-server --config webpack.config.js --display verbose --mode development --content-base ./webpack_dist/ --env.API_URL=http://127.0.0.1:8080"
+    "build": "webpack --config webpack.dev.config.js --display verbose --mode development --env.API_URL=http://127.0.0.1:8080 && cp ./src/index.html ./webpack_dist/",
+    "build:production": "webpack --config webpack.prod.config.js --display verbose --mode production --env.API_URL=http://127.0.0.1:8080 && cp ./src/index.html ./webpack_dist/",
+    "build:analysis": "webpack --config webpack.analysis.config.js --display verbose --mode production --env.API_URL=http://127.0.0.1:8080 && cp ./src/index.html ./webpack_dist/",
+    "serve": "webpack-dev-server --config webpack.dev.config.js --display verbose --mode development --content-base ./webpack_dist/ --env.API_URL=http://127.0.0.1:8080",
+    "serve:production": "webpack-dev-server --config webpack.prod.config.js --display verbose --mode development --content-base ./webpack_dist/ --env.API_URL=http://127.0.0.1:8080 --compress"
   },
   "main": "./src/dapp.js",
   "author": "",
@@ -16,6 +19,8 @@
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-serve": "^2.0.2"
   },
   "dependencies": {

@@ -44,7 +44,7 @@ class _Ticket721Card extends React.Component {
         if (this.props.recovered_infos) {
             try {
                 const parsed = JSON.parse(this.props.recovered_infos.content.toString());
-                return (<Card bordered={false} cover={<img alt="example" style={{height: '180px'}} src={parsed.image} onClick={() => {
+                return (<Card bordered={false} cover={<img alt="example" className="card_image" style={{height: '180px'}} src={parsed.image} onClick={() => {
                     this.props.history.push('/sale/' + this.props.address)
                 }}/>}
                               style={{
@@ -87,11 +87,11 @@ class _Ticket721Card extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    if (state.contracts.Ticket721Event[ownProps.address] && ownProps.event) {
+    if (ownProps.event) {
         return {
             ...ownProps,
             name: ownProps.event.name,
-            price: callContract(getContract(state, "Ticket721Event", ownProps.event.address), "getMintPrice"),
+            price: callContract(getContract(state, "Ticket721Controller", ownProps.event.address, true), "getMintPrice"),
             infos: filterHash(ownProps.event.infos),
             recovered_infos: state.ipfs[filterHash(ownProps.event.infos)]
         };

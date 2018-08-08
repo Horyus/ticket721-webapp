@@ -29,6 +29,7 @@ class _SaleLister extends React.Component {
         this.filter = this.filter.bind(this);
         this.updateInfos = this.updateInfos.bind(this);
         this.populate(this.props);
+        this.shouldComponentUpdate(this.props);
     }
 
     updateInfos(key, name, symbol) {
@@ -69,7 +70,9 @@ class _SaleLister extends React.Component {
     }
 
     filter(elem) {
-        return (Fuzzy.test(this.props.search, this.children_infos[elem.key].name));
+        if (this.children_infos[elem.key])
+            return (Fuzzy.test(this.props.search, this.children_infos[elem.key].name));
+        return false;
     }
 
     render() {

@@ -1,0 +1,34 @@
+.sale_description_card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    border-radius: 7px;
+    float: left;
+    padding: 15px;
+}
+
+.sale_description_card:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+}
+
+.sale_description_description {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.sale_description_date {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+
+.sale_description_address {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    font-weight: 100;
+    font-size: 16px;
+    text-align: center;
+}

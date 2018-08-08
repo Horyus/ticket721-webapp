@@ -5,6 +5,7 @@ import Ticket721 from '../dist/contracts/Ticket721';
 import Ticket721Public from '../dist/contracts/Ticket721Public';
 import Ticket721Hub from '../dist/contracts/Ticket721Hub';
 import Ticket721Event from '../dist/contracts/Ticket721Event';
+import Ticket721Controller from '../dist/contracts/Ticket721Controller';
 import {FeedNotifications} from "./components/feed-notifications";
 import {VortexGate, VortexWeb3Loading, VortexWeb3Loaded, VortexWeb3LoadError, VortexWeb3NetworkError, VortexWeb3Locked, VortexMetamaskLoader} from 'vort_x-components';
 import Web3 from 'web3';
@@ -21,11 +22,12 @@ import {ConnectionTracker} from "./components/connection_tracker";
 import './css/open-sans.css';
 import './css/oswald.css';
 import './css/pure-min.css';
-import {ManifestLoader} from "./components/manifest_loader";
 import {Loader} from "./components/loader";
 import {search} from "./redux/search/search.reducers";
 import {csapi} from './redux/csapi/csapi.reducers';
+import {wallet} from "./redux/wallet/wallet.reducers";
 import {CsApiSagas} from "./redux/csapi/csapi.sagas";
+import {WalletSagas} from "./redux/wallet/wallet.sagas";
 
 import './dapp.css';
 
@@ -39,17 +41,22 @@ class App extends React.Component {
                 status: 'DISCONNECTED',
                 wallet_status: 'NONE',
                 event_status: 'NONE',
-                public_wallet: [],
-                verified_wallet: [],
                 events: []
+            },
+            wallet: {
+                status: 'IDLE',
+                public_wallet: [],
+                verified_wallet: []
             }
         };
         this.reducers = {
             search,
-            csapi
+            csapi,
+            wallet
         };
         this.sagas = [
-            CsApiSagas
+            CsApiSagas,
+            WalletSagas
         ]
     }
 
@@ -76,6 +83,11 @@ class App extends React.Component {
                             abi: Ticket721Hub.abiDefinition,
                             at: Ticket721Hub.deployedAddress,
                             deployed_bytecode: Ticket721Hub.runtimeBytecode
+                        },
+
+                        Ticket721Controller: {
+                            abi: Ticket721Controller.abiDefinition,
+                            deployed_bytecode: Ticket721Controller.runtimeBytecode
                         },
 
                         Ticket721Event: {
@@ -113,19 +125,17 @@ class App extends React.Component {
 
                 <VortexWeb3Loaded>
                     <FeedNotifications>
-                        <ManifestLoader>
-                            <BrowserRouter>
-                                <ConnectionTracker>
-                                    <Switch>
-                                        <Route exact path="/" component={Home}/>
-                                        <Route path="/sale/:address" component={Sale}/>
-                                        <Route path="/account/:address" component={Account}/>
-                                        <Route path="/ticket/public/:id" component={PublicTicket}/>
-                                        <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
-                                    </Switch>
-                                </ConnectionTracker>
-                            </BrowserRouter>
-                        </ManifestLoader>
+                        <BrowserRouter>
+                            <ConnectionTracker>
+                                <Switch onChange={() => {console.log('olele')}}>
+                                    <Route exact path="/" component={Home}/>
+                                    <Route path="/sale/:address" component={Sale}/>
+                                    <Route path="/account/:address" component={Account}/>
+                                    <Route path="/ticket/public/:id" component={PublicTicket}/>
+                                    <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
+                                </Switch>
+                            </ConnectionTracker>
+                        </BrowserRouter>
                     </FeedNotifications>
                 </VortexWeb3Loaded>
                 <VortexWeb3Loading>

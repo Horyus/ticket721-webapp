@@ -12,9 +12,10 @@ export default function Hello() {
     return <DayPicker />;
 }
 
+import './index.css';
+
 const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
 
-import './index.css';
 
 function filterHash(uri) {
     if (!uri)
@@ -44,7 +45,6 @@ class _TicketShowcase extends React.Component {
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat).then((response) => {
             return response.json();
         }).then((json) => {
-            console.log(json);
             this.setState({
                 address: json.display_name,
                 address_elements: json.address
@@ -80,7 +80,6 @@ class _TicketShowcase extends React.Component {
             price: 32
         }];
         if (this.position) {
-            console.log(this.position);
             let modifiers;
             return (
                 <div>
@@ -146,7 +145,7 @@ class _TicketShowcase extends React.Component {
                                     {
                                         this.props.infos ?
                                             <div >
-                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%'}}/>
+                                                <img src={this.props.infos.image} style={{width: '80%', marginLeft: '10%', borderTopLeftRadius: '14px', borderBottomRightRadius: '14px'}}/>
                                                 <hr style={{width: '50%', marginBottom: '15px', marginTop: '15px', opacity: 0.2}}/>
                                             </div>
                                             :
@@ -300,13 +299,13 @@ const mapStateToProps = (state, ownProps) => {
     }
     return {
         ...ownProps,
-        infos: hash ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined,
+        infos: hash ? (getIPFSHash(state, hash) ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined) : undefined,
         event,
         owner,
-        mint_price: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getMintPrice"): undefined,
-        sell_price: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
-        begin: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getEventBegin"): undefined,
-        end: event ? callContract(getContract(state, "Ticket721Event", event.toLowerCase(), true), "getEventEnd"): undefined,
+        mint_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getMintPrice"): undefined,
+        sell_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
+        begin: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventBegin"): undefined,
+        end: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventEnd"): undefined,
 
     }
 };
