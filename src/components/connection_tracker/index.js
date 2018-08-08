@@ -297,7 +297,7 @@ const mapStateToProps = (state, ownProps) => {
         public_wallet_live_count: callContract(getContract(state, 'Ticket721Public'), 'balanceOf', state.web3.coinbase),
         verified_wallet_live_count: callContract(getContract(state, 'Ticket721'), 'balanceOf', state.web3.coinbase),
         public_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
-        verified_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true),
+        verified_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true, "0x000000000000000000000000" + state.web3.coinbase.slice(2)),
         coinbase: state.web3.coinbase
     };
 };

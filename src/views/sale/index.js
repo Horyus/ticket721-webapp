@@ -34,6 +34,7 @@ export class _Sale extends React.Component {
         if (this.props.infos && this.props.infos.longitude && this.props.infos.latitude && !this.address_fetch)
             this.reverseAddress(this.props.infos.longitude, this.props.infos.latitude);
 
+
         return (
             <div style={{
                 width: "98%",
@@ -43,7 +44,14 @@ export class _Sale extends React.Component {
                 <div style={{
                     marginLeft: '30px'
                 }}>
-                    <Title csapi_infos={this.props.csapi_sale_infos}/>
+                    {
+                        this.props.infos
+                            ?
+                            <Title name={this.props.infos.name}/>
+                            :
+                            null
+
+                    }
                     <Row style={{
                         height: window.innerWidth * 0.25,
                         width: '100%'
@@ -66,7 +74,9 @@ export class _Sale extends React.Component {
                                     ?
                                     <Description
                                         description={this.props.infos.description}
-                                        csapi_infos={this.props.csapi_sale_infos}
+                                        event_begin={this.props.event_begin}
+                                        event_end={this.props.event_end}
+                                        ipfs_infos={this.props.infos}
                                         address={this.state.address}
                                         address_elements={this.state.address_elements}
                                     />
@@ -115,11 +125,12 @@ const mapStateToProps = (state, ownProps) => {
         ...ownProps,
         sale_contract: instance,
         infos: content,
-        csapi_sale_infos: state.csapi.events.filter((elem) => {return (elem.address.toLowerCase() === ownProps.match.params.address.toLowerCase())}),
         mint_price: callContract(instance, 'getMintPrice'),
         seats_left: callContract(instance, 'getRemainingTickets'),
-        ticket_cap: callContract(instance, 'getTicketCap')
-    }
+        ticket_cap: callContract(instance, 'getTicketCap'),
+        event_begin: callContract(instance, 'getEventBegin'),
+        event_end: callContract(instance, 'getEventEnd'),
+    };
 };
 
 export const Sale = connect(_Sale, mapStateToProps);

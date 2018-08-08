@@ -45,7 +45,6 @@ class _InformationFeed extends React.Component {
     }
 
     shouldComponentUpdate(newProps) {
-        console.log(newProps);
         return this.updateFeed(newProps);
     }
 

@@ -8,7 +8,6 @@ class _TxBar extends React.Component {
 
         if (!this.props.tx)
             return null;
-        console.log(this.props.tx);
         let name = this.props.receiver;
         if (this.props.receiver && this.props.receiver.length >= 30) {
             name = this.props.receiver.split(0, 27) + '...';
