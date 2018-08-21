@@ -12,7 +12,7 @@ import SvgIcon from 'react-icons-kit';
 
 const SideNav = withRR4();
 
-import { fileText, chevronsDown, loader, link, layers, calendar, home, user} from 'react-icons-kit/feather';
+import { fileText, chevronsDown, loader, link, layers, calendar, home, user, settings} from 'react-icons-kit/feather';
 
 import {CsApiTracker} from "../csapi-tracker";
 import {CsApiFetchWallets} from "../../redux/csapi/csapi.actions";
@@ -253,7 +253,11 @@ export class _ConnectionTracker extends React.Component {
                             </Nav>
                             <Nav id={account_id}>
                                 <NavIcon><SvgIcon size={20} icon={user}/></NavIcon>
-                                <NavText><p className="navbar_title">account</p></NavText>
+                                <NavText><p className="navbar_title"> account </p></NavText>
+                            </Nav>
+                            <Nav id='settings'>
+                                <NavIcon><SvgIcon size={20} icon={settings}/></NavIcon>
+                                <NavText><p className="navbar_title"> settings </p></NavText>
                             </Nav>
 
                             <SeparatorTitle>

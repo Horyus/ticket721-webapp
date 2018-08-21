@@ -59,10 +59,9 @@ export class _Account extends React.Component {
             <div style={{
                 backgroundColor: '#ffffff',
                 minHeight: '110%',
-                width: '98%'
+                width: '99%'
             }}>
-                <div style={{width: '110%'}}>
-                    {renderHTML('<svg data-jdenticon-value="' + this.account.toLowerCase() + '" width="45" height="45" class="profile-logo"/>')}
+                <div style={{width: '100%'}}>
                     {
                         this.account
                             ?

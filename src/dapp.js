@@ -14,6 +14,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {Home} from "./views/home";
 import {Sale} from "./views/sale";
 import {Account} from "./views/account";
+import {Settings} from "./views/settings";
 import {PublicTicket} from "./views/public_ticket";
 import {VerifiedTicket} from "./views/verified_ticket";
 
@@ -130,6 +131,7 @@ class App extends React.Component {
                                 <Switch onChange={() => {console.log('olele')}}>
                                     <Route exact path="/" component={Home}/>
                                     <Route path="/sale/:address" component={Sale}/>
+                                    <Route path="/settings" component={Settings}/>
                                     <Route path="/account/:address" component={Account}/>
                                     <Route path="/ticket/public/:id" component={PublicTicket}/>
                                     <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
