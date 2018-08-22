@@ -52,7 +52,37 @@ const CsApiGotEventsReducer = (state, action) => {
     }
 };
 
-export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: [], events: []}, action) => {
+const CsApiGetAddressFromCode = (state, action) => {
+    return {
+        ...state,
+        codes: {
+            ...state.codes,
+            [action.code]: 'Fetching ...'
+        }
+    }
+};
+
+const CsApiGotAddressFromCode = (state, action) => {
+    return {
+        ...state,
+        codes: {
+            ...state.codes,
+            [action.code]: action.address
+        }
+    }
+};
+
+const CsApiGotInvalidAddressFromCode = (state, action) => {
+    return {
+        ...state,
+        codes: {
+            ...state.codes,
+            [action.code]: 'Invalid Code'
+        }
+    };
+};
+
+export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: [], events: [], codes: {}}, action) => {
 
     switch (action.type) {
         case (CsApiActionTypes.CSAPI_LOADED):
@@ -69,6 +99,12 @@ export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', ev
             return CsApiGettingEventsReducer(state, action);
         case (CsApiActionTypes.CSAPI_GOT_EVENTS):
             return CsApiGotEventsReducer(state, action);
+        case (CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE):
+            return CsApiGetAddressFromCode(state, action);
+        case (CsApiActionTypes.CSAPI_GOT_ADDRESS_FROM_CODE):
+            return CsApiGotAddressFromCode(state, action);
+        case (CsApiActionTypes.CSAPI_GOT_INVALID_ADDRESS_FROM_CODE):
+            return CsApiGotInvalidAddressFromCode(state, action);
         default:
             return state
     }

@@ -12,7 +12,10 @@ export const CsApiActionTypes = {
     CSAPI_FETCH_WALLETS_DONE: 'CSAPI_FETCH_WALLETS_DONE',
     CSAPI_GET_EVENTS: 'CSAPI_GET_EVENTS',
     CSAPI_GETTING_EVENTS: 'CSAPI_GETTING_EVENTS',
-    CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS'
+    CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS',
+    CSAPI_GET_ADDRESS_FROM_CODE: 'CSAPI_GET_ADDRESS_FROM_CODE',
+    CSAPI_GOT_ADDRESS_FROM_CODE: 'CSAPI_GOT_ADDRESS_FROM_CODE',
+    CSAPI_GOT_INVALID_ADDRESS_FROM_CODE: 'CSAPI_GOT_INVALID_ADDRESS_FROM_CODE'
 };
 
 export const CsApiInit = (url, coinbase) => {
@@ -107,6 +110,28 @@ export const CsApiGotEvents = (events) => {
     return {
         type: CsApiActionTypes.CSAPI_GOT_EVENTS,
         events
+    }
+};
+
+export const CsApiGetAddressFromCode = (code) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE,
+        code
+    }
+};
+
+export const CsApiGotAddressFromCode = (code, address) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_ADDRESS_FROM_CODE,
+        code,
+        address
+    }
+};
+
+export const CsApiGotInvalidAddressFromCode = (code) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_INVALID_ADDRESS_FROM_CODE,
+        code
     }
 };
 

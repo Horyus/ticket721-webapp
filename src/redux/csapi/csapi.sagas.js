@@ -2,7 +2,13 @@ import { call, put, select, takeEvery, take } from 'redux-saga/effects'
 import {eventChannel, END} from 'redux-saga';
 import {
     CsApiActionTypes,
-    CsApiConnected, CsApiFetchWalletsDone, CsApiGetInfos, CsApiGettingEvents, CsApiGotEvents, CsApiGotInfos,
+    CsApiConnected,
+    CsApiFetchWalletsDone,
+    CsApiGetInfos,
+    CsApiGettingEvents,
+    CsApiGotAddressFromCode,
+    CsApiGotEvents,
+    CsApiGotInfos, CsApiGotInvalidAddressFromCode,
     CsApiLoaded,
     CsApiRegistered
 } from "./csapi.actions";
@@ -229,6 +235,37 @@ function* fetch_infos(action) {
     }
 }
 
+function* csapi_get_address(instance, code) {
+    return (eventChannel((emit) => {
+
+        instance.get_address_from_code(code).then(address => {
+            emit(CsApiGotAddressFromCode(code, address));
+            emit(END);
+        }).catch(e => {
+            emit(CsApiGotInvalidAddressFromCode(code));
+            emit(END);
+        });
+
+        return (() => {});
+    }));
+}
+
+function* call_get_address(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_addr = yield call(csapi_get_address, csapi.instance, action.code);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_addr);
+            yield put(event);
+        }
+    } finally {
+        call_get_addr.close();
+    }
+}
+
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
@@ -238,4 +275,5 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE, call_get_address)
 }

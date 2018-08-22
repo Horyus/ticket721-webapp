@@ -42,7 +42,8 @@ class App extends React.Component {
                 status: 'DISCONNECTED',
                 wallet_status: 'NONE',
                 event_status: 'NONE',
-                events: []
+                events: [],
+                codes: {}
             },
             wallet: {
                 status: 'IDLE',

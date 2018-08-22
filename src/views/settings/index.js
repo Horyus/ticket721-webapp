@@ -24,28 +24,20 @@ export class _Settings extends React.Component {
                 }
             </div>
             <div style={{padding: 30}}>
-            <Row gutter={16}>
-                <Col span={8}>
+                <Row gutter={16}>
+                    <Col span={10}>
 
-                    <style>{`
-                        .ant-card-head-title {
-                            font-family: 'Roboto', sans-serif;
-                            font-weight: 300;
-                            font-size: 25px;
-                        }
-                    `}</style>
 
-                    <Card
-                        title="companion settings"
-                        headstyle={{
-                            fontFamily: 'Roboto, sans-serif'
-                        }}
-                        className="card"
-                        style={{width: '100%'}}>
-                        <CompanionSettings/>
-                    </Card>
-                </Col>
-            </Row>
+                        <div
+                            className="card"
+                            style={{
+                                width: '100%'
+                            }}>
+                            <p className="title">companion settings</p>
+                            <CompanionSettings/>
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </div>)
 
