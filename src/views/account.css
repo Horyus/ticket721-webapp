@@ -2,8 +2,9 @@
     font-family: 'Roboto', sans-serif;
     font-weight: 200;
     font-size: 30px;
-    background-color: #131313;
-    color: #ffffff;
+    color: #131313;
+    background-color: #ffffff;
+    margin-left: 10px;
 }
 
 .section_title {

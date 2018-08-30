@@ -274,7 +274,6 @@ export class _ConnectionTracker extends React.Component {
                     </div>
                         <InformationFeed/>
                     </div>
-                    <div style={{background: '#121212', width: '1%', height: '100%', float: 'left'}}/>
                 </div>
                 <div className="right-div">
                     {this.props.children}
