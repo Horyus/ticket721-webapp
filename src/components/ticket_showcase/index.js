@@ -5,14 +5,18 @@ import {LeafletLeftMap} from "../leaflet_left_map";
 import {gradient_generator} from "../../helpers/gradient_generator";
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-import {Row, Col, Table} from 'antd'
+import {Row, Col} from 'antd'
 import * as QRCode from 'qrcode.react';
+import {TicketHistory} from "../ticket_history";
+import * as Web3Util from 'web3-utils';
 
 export default function Hello() {
     return <DayPicker />;
 }
 
 import './index.css';
+import {OpenSaleForm} from "./OpenSaleForm";
+import {CloseSaleForm} from "./CloseSaleForm";
 
 const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
 
@@ -121,7 +125,7 @@ class _TicketShowcase extends React.Component {
                             width: '100%'
                         }}>
                             <style>{
-                            `
+                                `
                             .ticket_showcase_title {
                                 font-family: "Roboto", monospace;
                                 font-weight: 300;
@@ -185,8 +189,6 @@ class _TicketShowcase extends React.Component {
                             </Col>
                             <Col span={8}>
                                 <div className="data_card" style={{textAlign: 'center'}}>
-                                    <QRCode value={this.props.contract + "#" + this.props.id.toString()} fgColor="#121212"/>
-                                    <hr style={{width: '50%', marginBottom: '15px', marginTop: '15px', opacity: 0.2}}/>
                                     <DayPicker
                                         month={
                                             this.props.end && this.props.begin ?
@@ -214,8 +216,6 @@ class _TicketShowcase extends React.Component {
                                         ]}
                                         fixedWeeks
                                     />
-                                    <hr style={{width: '50%', marginBottom: '15px', marginTop: '15px', opacity: 0.2}}/>
-                                    <p>Download our app, follow the setup instruction and scan this QRCode to be able to access your event.</p>
                                 </div>
                             </Col>
                         </Row>
@@ -225,55 +225,51 @@ class _TicketShowcase extends React.Component {
                             marginBottom: '40px'
                         }}>
                             <div className="data_card" style={{
-                                width: '50%',
+                                width: '100%',
                                 textAlign: 'center'
                             }}>
-                                <style>{
-                                    `
-                                    .ant-table-small {
-                                        border: 0;
-                                    }
-                                    .ant-table {
-                                        font-family: 'Roboto', sans-serif;
-                                        font-size: 40px !important;
-                                    }
-                                    .ant-table-row {
-                                        font-size: 22px;
-                                        font-weight: 300;
-                                    }
-                                    .ant-table-thead > tr > th {
-                                        background-color: #ffffff !important;
-                                    }
-                                    .price {
-                                        font-family: 'Roboto Mono', monospace;
-                                        font-weigth: 400;
-                                        background: ${this.gradient.bg} center !important;
-                                        background-clip: text !important;
-                                        -webkit-background-clip:        text !important;
-                                        color: transparent !important;
-                                        cursor: pointer;
-                                    }
-                                    .event_title {
-                                        background-color: white !important;
-                                        cursor: pointer;
-                                        text-align: left;
-                                    }
-                                    .tx_history_title {
-                                        font-family: 'Roboto', sans-serif;
-                                        font-size: 22px;
-                                        font-weight: 300;
-                                    }
-                                    `
-                                }</style>
-                                <p className="tx_history_title">Transaction History</p>
-                                <Table
-                                    columns={columns}
-                                    dataSource={data}
-                                    size="medium"
-                                    pagination={false}
-                                    indentSize={500}
-                                    showHeader={false}
-                                />
+                                <TicketHistory id={this.props.id} verified={this.props.contract === 'Ticket721'}/>
+                            </div>
+                            <div className="data_card" style={{
+                                width: '100%',
+                                textAlign: 'center'
+                            }}>
+                                {
+                                    this.props.isSaleOpen
+                                        ?
+                                        <h2>
+                                            Ticket is currently under sale for {this.props.sell_price ? Web3Util.fromWei(this.props.sell_price.toString(), 'ether') : '...'} Ξ
+                                        </h2>
+                                        :
+                                        <h2>
+                                            Ticket is not under sale
+                                        </h2>
+                                }
+                                {
+                                    this.props.isOwner && this.props.isSaleOpen
+                                        ?
+                                        <CloseSaleForm submit_handle={() => {
+                                            console.log('CLOSE');
+                                        }}/>
+                                        :
+                                        null
+                                }
+                                {
+                                    this.props.isOwner && !this.props.isSaleOpen
+                                        ?
+                                        <OpenSaleForm submit_handle={(data) => {
+                                            this.props.saleStart(data);
+                                        }}/>
+                                        :
+                                        null
+                                }
+                                {
+                                    !this.props.isOwner && this.props.isSaleOpen
+                                        ?
+                                        <div>BUY TICKET</div>
+                                        :
+                                        null
+                                }
                             </div>
                         </Row>
                     </LeafletLeftMap>
@@ -297,16 +293,22 @@ const mapStateToProps = (state, ownProps) => {
         event = callContract(instance, "fromEvent", ownProps.id);
         owner = callContract(instance, "ownerOf", ownProps.id);
     }
+    if (event)
+        getContract(state, 'Ticket721Event', event.toLowerCase(), true);
     return {
         ...ownProps,
         infos: hash ? (getIPFSHash(state, hash) ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined) : undefined,
         event,
         owner,
+        isOwner: owner ? owner.toLowerCase() === state.web3.coinbase.toLowerCase() : undefined,
         mint_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getMintPrice"): undefined,
         sell_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
         begin: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventBegin"): undefined,
         end: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventEnd"): undefined,
-
+        isSaleOpen: event ? callContract(instance, "isSaleOpen", ownProps.id): undefined,
+        saleStart: event ? (price) => {
+            getContract(state, 'Ticket721Event', event.toLowerCase(), true).vortexMethods.saleTicket.send(ownProps.id, Web3Util.toWei(price, 'ether'))
+        } : () => {},
     }
 };
 

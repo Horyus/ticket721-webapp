@@ -82,7 +82,37 @@ const CsApiGotInvalidAddressFromCode = (state, action) => {
     };
 };
 
-export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: [], events: [], codes: {}}, action) => {
+const CsApiGetHistory = (state, action) => {
+
+    return {
+        ...state,
+        ticket_histories: {
+            ...state.ticket_histories,
+            [action.id]: {
+                status: 'FETCHING',
+                history: state.ticket_histories[action.id] ? state.ticket_histories[action.id].history : []
+            }
+        }
+    };
+
+};
+
+const CsApiGotHistory = (state, action) => {
+
+    return {
+        ...state,
+        ticket_histories: {
+            ...state.ticket_histories,
+            [action.id]: {
+                status: 'READY',
+                history: action.history
+            }
+        }
+    };
+
+};
+
+export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', event_status: 'NONE', public_wallet: [], varified_wallet: [], events: [], codes: {}, ticket_histories: {}}, action) => {
 
     switch (action.type) {
         case (CsApiActionTypes.CSAPI_LOADED):
@@ -105,6 +135,10 @@ export const csapi = (state = {status: 'DISCONNECTED', wallet_status: 'NONE', ev
             return CsApiGotAddressFromCode(state, action);
         case (CsApiActionTypes.CSAPI_GOT_INVALID_ADDRESS_FROM_CODE):
             return CsApiGotInvalidAddressFromCode(state, action);
+        case (CsApiActionTypes.CSAPI_GET_HISTORY):
+            return CsApiGetHistory(state, action);
+        case (CsApiActionTypes.CSAPI_GOT_HISTORY):
+            return CsApiGotHistory(state, action);
         default:
             return state
     }

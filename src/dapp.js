@@ -17,6 +17,7 @@ import {Account} from "./views/account";
 import {Settings} from "./views/settings";
 import {PublicTicket} from "./views/public_ticket";
 import {VerifiedTicket} from "./views/verified_ticket";
+import {Marketplace} from "./views/marketplace";
 
 import {ConnectionTracker} from "./components/connection_tracker";
 
@@ -43,7 +44,8 @@ class App extends React.Component {
                 wallet_status: 'NONE',
                 event_status: 'NONE',
                 events: [],
-                codes: {}
+                codes: {},
+                ticket_histories: {}
             },
             wallet: {
                 status: 'IDLE',
@@ -133,9 +135,10 @@ class App extends React.Component {
                                     <Route exact path="/" component={Home}/>
                                     <Route path="/sale/:address" component={Sale}/>
                                     <Route path="/settings" component={Settings}/>
-                                    <Route path="/account/:address" component={Account}/>
+                                    <Route path="/account" component={Account}/>
                                     <Route path="/ticket/public/:id" component={PublicTicket}/>
                                     <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
+                                    <Route path="/marketplace" component={Marketplace}/>
                                 </Switch>
                             </ConnectionTracker>
                         </BrowserRouter>

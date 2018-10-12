@@ -12,7 +12,7 @@ import SvgIcon from 'react-icons-kit';
 
 const SideNav = withRR4();
 
-import { fileText, chevronsDown, loader, link, layers, calendar, home, user, settings} from 'react-icons-kit/feather';
+import { fileText, chevronsDown, loader, link, layers, calendar, home, user, settings, dollarSign} from 'react-icons-kit/feather';
 
 import {CsApiTracker} from "../csapi-tracker";
 import {CsApiFetchWallets} from "../../redux/csapi/csapi.actions";
@@ -209,8 +209,6 @@ export class _ConnectionTracker extends React.Component {
             </div>;
         }
 
-        const account_id = `account/${this.props.coinbase}`;
-
         return (
             <div>
                 <div className="left-div">
@@ -251,9 +249,13 @@ export class _ConnectionTracker extends React.Component {
                                 <NavIcon><SvgIcon size={20} icon={home}/></NavIcon>
                                 <NavText><p className="navbar_title"> home </p></NavText>
                             </Nav>
-                            <Nav id={account_id}>
+                            <Nav id='account'>
                                 <NavIcon><SvgIcon size={20} icon={user}/></NavIcon>
                                 <NavText><p className="navbar_title"> account </p></NavText>
+                            </Nav>
+                            <Nav id='marketplace'>
+                                <NavIcon><SvgIcon size={20} icon={dollarSign}/></NavIcon>
+                                <NavText><p className="navbar_title"> marketplace </p></NavText>
                             </Nav>
                             <Nav id='settings'>
                                 <NavIcon><SvgIcon size={20} icon={settings}/></NavIcon>

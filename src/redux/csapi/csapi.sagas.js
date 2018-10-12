@@ -7,7 +7,7 @@ import {
     CsApiGetInfos,
     CsApiGettingEvents,
     CsApiGotAddressFromCode,
-    CsApiGotEvents,
+    CsApiGotEvents, CsApiGotHistory,
     CsApiGotInfos, CsApiGotInvalidAddressFromCode,
     CsApiLoaded,
     CsApiRegistered
@@ -266,6 +266,41 @@ function* call_get_address(action) {
     }
 }
 
+function* call_get_ticket_history(instance, action) {
+
+    return eventChannel(emit => {
+        instance.get_ticket_history(action.id, action.verified)
+            .then(history => {
+                emit(CsApiGotHistory(action.id, history));
+                emit(END);
+            })
+            .catch(e => {
+                emit(CsApiGotHistory(action.id, []));
+                emit(END);
+            });
+
+        return (() => {});
+    });
+
+}
+
+function* call_get_history(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_ticket_hist = yield call(call_get_ticket_history, csapi.instance, action);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_ticket_hist);
+            yield put(event);
+        }
+    } finally {
+        call_get_ticket_hist.close();
+    }
+
+}
+
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
@@ -275,5 +310,6 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
-    yield takeEvery(CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE, call_get_address)
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE, call_get_address);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_HISTORY, call_get_history);
 }

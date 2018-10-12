@@ -15,7 +15,9 @@ export const CsApiActionTypes = {
     CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS',
     CSAPI_GET_ADDRESS_FROM_CODE: 'CSAPI_GET_ADDRESS_FROM_CODE',
     CSAPI_GOT_ADDRESS_FROM_CODE: 'CSAPI_GOT_ADDRESS_FROM_CODE',
-    CSAPI_GOT_INVALID_ADDRESS_FROM_CODE: 'CSAPI_GOT_INVALID_ADDRESS_FROM_CODE'
+    CSAPI_GOT_INVALID_ADDRESS_FROM_CODE: 'CSAPI_GOT_INVALID_ADDRESS_FROM_CODE',
+    CSAPI_GET_HISTORY: 'CSAPI_GET_HISTORY',
+    CSAPI_GOT_HISTORY: 'CSAPI_GOT_HISTORY'
 };
 
 export const CsApiInit = (url, coinbase) => {
@@ -132,6 +134,22 @@ export const CsApiGotInvalidAddressFromCode = (code) => {
     return {
         type: CsApiActionTypes.CSAPI_GOT_INVALID_ADDRESS_FROM_CODE,
         code
+    }
+};
+
+export const CsApiGetHistory = (verified, id) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_HISTORY,
+        verified,
+        id
+    }
+};
+
+export const CsApiGotHistory = (id, history) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_HISTORY,
+        history,
+        id
     }
 };
 
