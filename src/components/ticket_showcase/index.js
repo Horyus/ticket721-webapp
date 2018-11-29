@@ -17,6 +17,7 @@ export default function Hello() {
 import './index.css';
 import {OpenSaleForm} from "./OpenSaleForm";
 import {CloseSaleForm} from "./CloseSaleForm";
+import {BuySaleForm} from "./BuySaleForm";
 
 const IpfsGatewayRegexp = /^http(s?):\/\/(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\/ipfs\/(Qm[a-zA-Z0-9]{44})$/;
 
@@ -249,7 +250,7 @@ class _TicketShowcase extends React.Component {
                                     this.props.isOwner && this.props.isSaleOpen
                                         ?
                                         <CloseSaleForm submit_handle={() => {
-                                            console.log('CLOSE');
+                                            this.props.saleClose();
                                         }}/>
                                         :
                                         null
@@ -266,7 +267,9 @@ class _TicketShowcase extends React.Component {
                                 {
                                     !this.props.isOwner && this.props.isSaleOpen
                                         ?
-                                        <div>BUY TICKET</div>
+                                        <BuySaleForm submit_handle={() => {
+                                            this.props.buy();
+                                        }}/>
                                         :
                                         null
                                 }
@@ -295,6 +298,7 @@ const mapStateToProps = (state, ownProps) => {
     }
     if (event)
         getContract(state, 'Ticket721Event', event.toLowerCase(), true);
+    const sell_price = event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined;
     return {
         ...ownProps,
         infos: hash ? (getIPFSHash(state, hash) ? JSON.parse(getIPFSHash(state, hash).content.toString()) : undefined) : undefined,
@@ -302,13 +306,19 @@ const mapStateToProps = (state, ownProps) => {
         owner,
         isOwner: owner ? owner.toLowerCase() === state.web3.coinbase.toLowerCase() : undefined,
         mint_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getMintPrice"): undefined,
-        sell_price: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getTicketPrice", ownProps.id): undefined,
+        sell_price,
         begin: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventBegin"): undefined,
         end: event ? callContract(getContract(state, "Ticket721Controller", event.toLowerCase(), true), "getEventEnd"): undefined,
         isSaleOpen: event ? callContract(instance, "isSaleOpen", ownProps.id): undefined,
         saleStart: event ? (price) => {
             getContract(state, 'Ticket721Event', event.toLowerCase(), true).vortexMethods.saleTicket.send(ownProps.id, Web3Util.toWei(price, 'ether'))
         } : () => {},
+        saleClose: event ? () => {
+            getContract(state, 'Ticket721Event', event.toLowerCase(), true).vortexMethods.closeSaleTicket.send(ownProps.id, {gas: 100000})
+        } : () => {},
+        buy: event && sell_price ? () => {
+            instance.vortexMethods.buy.send(ownProps.id, {value: sell_price, gas: 200000})
+        } : () => {}
     }
 };
 

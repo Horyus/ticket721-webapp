@@ -64,6 +64,14 @@ export class _ConnectionTracker extends React.Component {
             this.props.fetchWallets();
             this.props.test_fetchWallets();
         }
+        if (this.props.public_buy_events.length !== newProps.public_buy_events.length) {
+            this.props.fetchWallets();
+            this.props.test_fetchWallets();
+        }
+        else if (this.props.verified_buy_events.length !== newProps.verified_buy_events.length) {
+            this.props.fetchWallets();
+            this.props.test_fetchWallets();
+        }
         return true;
     }
 
@@ -303,6 +311,8 @@ const mapStateToProps = (state, ownProps) => {
         verified_wallet_live_count: callContract(getContract(state, 'Ticket721'), 'balanceOf', state.web3.coinbase),
         public_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
         verified_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true, "0x000000000000000000000000" + state.web3.coinbase.slice(2)),
+        public_buy_events: getEvents(state, {event_name: 'Buy', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
+        verified_buy_events: getEvents(state, {event_name: 'Buy', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true, "0x000000000000000000000000" + state.web3.coinbase.slice(2)),
         coinbase: state.web3.coinbase
     };
 };

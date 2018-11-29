@@ -87,6 +87,18 @@ const mapStateToProps = (state, ownProps) => {
                     break end;
                 }
             }
+            for (let address of Object.keys(state.contracts.Ticket721)) {
+                if (address.toLowerCase() === to.toLowerCase()) {
+                    to = 'Ticket721';
+                    break end;
+                }
+            }
+            for (let address of Object.keys(state.contracts.Ticket721Public)) {
+                if (address.toLowerCase() === to.toLowerCase()) {
+                    to = 'Ticket721Public';
+                    break end;
+                }
+            }
         }
     return {
         ...ownProps,

@@ -45,7 +45,9 @@ class App extends React.Component {
                 event_status: 'NONE',
                 events: [],
                 codes: {},
-                ticket_histories: {}
+                ticket_histories: {},
+                sold_tickets: [],
+                sold_ticket_status: 'NONE'
             },
             wallet: {
                 status: 'IDLE',
@@ -131,7 +133,7 @@ class App extends React.Component {
                     <FeedNotifications>
                         <BrowserRouter>
                             <ConnectionTracker>
-                                <Switch onChange={() => {console.log('olele')}}>
+                                <Switch>
                                     <Route exact path="/" component={Home}/>
                                     <Route path="/sale/:address" component={Sale}/>
                                     <Route path="/settings" component={Settings}/>

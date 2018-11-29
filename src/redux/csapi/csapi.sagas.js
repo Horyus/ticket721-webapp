@@ -8,7 +8,7 @@ import {
     CsApiGettingEvents,
     CsApiGotAddressFromCode,
     CsApiGotEvents, CsApiGotHistory,
-    CsApiGotInfos, CsApiGotInvalidAddressFromCode,
+    CsApiGotInfos, CsApiGotInvalidAddressFromCode, CsApiGotSoldTickets,
     CsApiLoaded,
     CsApiRegistered
 } from "./csapi.actions";
@@ -301,6 +301,41 @@ function* call_get_history(action) {
 
 }
 
+function* call_get_sold_tickets_channel(instance, action) {
+
+    return eventChannel(emit => {
+        instance.get_sold_tickets(action.verified)
+            .then(tickets => {
+                emit(CsApiGotSoldTickets(tickets));
+                emit(END);
+            })
+            .catch(e => {
+                emit(CsApiGotSoldTickets([]));
+                emit(END);
+            });
+
+        return (() => {});
+    });
+
+}
+
+function* call_get_sold_tickets(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_ticket_hist = yield call(call_get_sold_tickets_channel, csapi.instance, action);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_ticket_hist);
+            yield put(event);
+        }
+    } finally {
+        call_get_ticket_hist.close();
+    }
+
+}
+
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
@@ -312,4 +347,5 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
     yield takeEvery(CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE, call_get_address);
     yield takeEvery(CsApiActionTypes.CSAPI_GET_HISTORY, call_get_history);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_SOLD_TICKETS, call_get_sold_tickets);
 }

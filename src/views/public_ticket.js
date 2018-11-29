@@ -4,7 +4,6 @@ import {TicketShowcase} from "../components/ticket_showcase";
 export class PublicTicket extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props.match.params.id);
     }
 
     render() {
