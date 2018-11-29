@@ -12,7 +12,7 @@ import SvgIcon from 'react-icons-kit';
 
 const SideNav = withRR4();
 
-import { fileText, chevronsDown, loader, link, layers, calendar, home, user} from 'react-icons-kit/feather';
+import { fileText, chevronsDown, loader, link, layers, calendar, home, user, settings, dollarSign} from 'react-icons-kit/feather';
 
 import {CsApiTracker} from "../csapi-tracker";
 import {CsApiFetchWallets} from "../../redux/csapi/csapi.actions";
@@ -61,6 +61,14 @@ export class _ConnectionTracker extends React.Component {
             this.props.test_fetchWallets();
         }
         else if (this.props.verified_mint_events.length !== newProps.verified_mint_events.length) {
+            this.props.fetchWallets();
+            this.props.test_fetchWallets();
+        }
+        if (this.props.public_buy_events.length !== newProps.public_buy_events.length) {
+            this.props.fetchWallets();
+            this.props.test_fetchWallets();
+        }
+        else if (this.props.verified_buy_events.length !== newProps.verified_buy_events.length) {
             this.props.fetchWallets();
             this.props.test_fetchWallets();
         }
@@ -209,8 +217,6 @@ export class _ConnectionTracker extends React.Component {
             </div>;
         }
 
-        const account_id = `account/${this.props.coinbase}`;
-
         return (
             <div>
                 <div className="left-div">
@@ -251,9 +257,17 @@ export class _ConnectionTracker extends React.Component {
                                 <NavIcon><SvgIcon size={20} icon={home}/></NavIcon>
                                 <NavText><p className="navbar_title"> home </p></NavText>
                             </Nav>
-                            <Nav id={account_id}>
+                            <Nav id='account'>
                                 <NavIcon><SvgIcon size={20} icon={user}/></NavIcon>
-                                <NavText><p className="navbar_title">account</p></NavText>
+                                <NavText><p className="navbar_title"> account </p></NavText>
+                            </Nav>
+                            <Nav id='marketplace'>
+                                <NavIcon><SvgIcon size={20} icon={dollarSign}/></NavIcon>
+                                <NavText><p className="navbar_title"> marketplace </p></NavText>
+                            </Nav>
+                            <Nav id='settings'>
+                                <NavIcon><SvgIcon size={20} icon={settings}/></NavIcon>
+                                <NavText><p className="navbar_title"> settings </p></NavText>
                             </Nav>
 
                             <SeparatorTitle>
@@ -270,7 +284,6 @@ export class _ConnectionTracker extends React.Component {
                     </div>
                         <InformationFeed/>
                     </div>
-                    <div style={{background: '#121212', width: '1%', height: '100%', float: 'left'}}/>
                 </div>
                 <div className="right-div">
                     {this.props.children}
@@ -298,6 +311,8 @@ const mapStateToProps = (state, ownProps) => {
         verified_wallet_live_count: callContract(getContract(state, 'Ticket721'), 'balanceOf', state.web3.coinbase),
         public_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
         verified_mint_events: getEvents(state, {event_name: 'Mint', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true, "0x000000000000000000000000" + state.web3.coinbase.slice(2)),
+        public_buy_events: getEvents(state, {event_name: 'Buy', contract_name: 'Ticket721Public', contract_address: state.contracts.Ticket721Public.deployed}, true),
+        verified_buy_events: getEvents(state, {event_name: 'Buy', contract_name: 'Ticket721', contract_address: state.contracts.Ticket721.deployed}, true, "0x000000000000000000000000" + state.web3.coinbase.slice(2)),
         coinbase: state.web3.coinbase
     };
 };

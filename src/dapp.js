@@ -14,8 +14,10 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {Home} from "./views/home";
 import {Sale} from "./views/sale";
 import {Account} from "./views/account";
+import {Settings} from "./views/settings";
 import {PublicTicket} from "./views/public_ticket";
 import {VerifiedTicket} from "./views/verified_ticket";
+import {Marketplace} from "./views/marketplace";
 
 import {ConnectionTracker} from "./components/connection_tracker";
 
@@ -41,7 +43,11 @@ class App extends React.Component {
                 status: 'DISCONNECTED',
                 wallet_status: 'NONE',
                 event_status: 'NONE',
-                events: []
+                events: [],
+                codes: {},
+                ticket_histories: {},
+                sold_tickets: [],
+                sold_ticket_status: 'NONE'
             },
             wallet: {
                 status: 'IDLE',
@@ -127,12 +133,14 @@ class App extends React.Component {
                     <FeedNotifications>
                         <BrowserRouter>
                             <ConnectionTracker>
-                                <Switch onChange={() => {console.log('olele')}}>
+                                <Switch>
                                     <Route exact path="/" component={Home}/>
                                     <Route path="/sale/:address" component={Sale}/>
-                                    <Route path="/account/:address" component={Account}/>
+                                    <Route path="/settings" component={Settings}/>
+                                    <Route path="/account" component={Account}/>
                                     <Route path="/ticket/public/:id" component={PublicTicket}/>
                                     <Route path="/ticket/verified/:id" component={VerifiedTicket}/>
+                                    <Route path="/marketplace" component={Marketplace}/>
                                 </Switch>
                             </ConnectionTracker>
                         </BrowserRouter>

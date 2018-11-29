@@ -12,7 +12,16 @@ export const CsApiActionTypes = {
     CSAPI_FETCH_WALLETS_DONE: 'CSAPI_FETCH_WALLETS_DONE',
     CSAPI_GET_EVENTS: 'CSAPI_GET_EVENTS',
     CSAPI_GETTING_EVENTS: 'CSAPI_GETTING_EVENTS',
-    CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS'
+    CSAPI_GOT_EVENTS: 'CSAPI_GOT_EVENTS',
+    CSAPI_GET_ADDRESS_FROM_CODE: 'CSAPI_GET_ADDRESS_FROM_CODE',
+    CSAPI_GOT_ADDRESS_FROM_CODE: 'CSAPI_GOT_ADDRESS_FROM_CODE',
+    CSAPI_GOT_INVALID_ADDRESS_FROM_CODE: 'CSAPI_GOT_INVALID_ADDRESS_FROM_CODE',
+    CSAPI_GET_HISTORY: 'CSAPI_GET_HISTORY',
+    CSAPI_GOT_HISTORY: 'CSAPI_GOT_HISTORY',
+    CSAPI_GET_SOLD_TICKETS: 'CSAPI_GET_SOLD_TICKETS',
+    CSAPI_GOT_SOLD_TICKETS: 'CSAPI_GOT_SOLD_TICKETS',
+    CSAPI_FETCHING_SOLD_TICKET_INFOS: 'CSAPI_FETCHING_SOLD_TICKET_INFOS',
+    CSAPI_FETCHED_SOLD_TICKET_INFOS: 'CSAPI_FETCHED_SOLD_TICKET_INFOS'
 };
 
 export const CsApiInit = (url, coinbase) => {
@@ -110,3 +119,69 @@ export const CsApiGotEvents = (events) => {
     }
 };
 
+export const CsApiGetAddressFromCode = (code) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE,
+        code
+    }
+};
+
+export const CsApiGotAddressFromCode = (code, address) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_ADDRESS_FROM_CODE,
+        code,
+        address
+    }
+};
+
+export const CsApiGotInvalidAddressFromCode = (code) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_INVALID_ADDRESS_FROM_CODE,
+        code
+    }
+};
+
+export const CsApiGetHistory = (verified, id) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_HISTORY,
+        verified,
+        id
+    }
+};
+
+export const CsApiGotHistory = (id, history) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_HISTORY,
+        history,
+        id
+    }
+};
+
+export const CsApiGetSoldTickets = (verified) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GET_SOLD_TICKETS,
+        verified
+    };
+};
+
+export const CsApiGotSoldTickets = (tickets) => {
+    return {
+        type: CsApiActionTypes.CSAPI_GOT_SOLD_TICKETS,
+        tickets
+    }
+};
+
+export const CsApiFetchingSoldTicketInfos = (ticket_id) => {
+    return {
+        type: CsApiActionTypes.CSAPI_FETCHING_SOLD_TICKET_INFOS,
+        ticket_id
+    }
+};
+
+export const CsApiFetchedSoldTicketsInfos = (ticket_id, ticket_infos) => {
+    return {
+        type: CsApiActionTypes.CSAPI_FETCHED_SOLD_TICKET_INFOS,
+        ticket_id,
+        ticket_infos
+    }
+};

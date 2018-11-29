@@ -1,7 +1,8 @@
 import { call, put, select, takeEvery, take } from 'redux-saga/effects'
 import {eventChannel, END} from 'redux-saga';
 import {WalletActionTypes, WalletFetchDone} from "./wallet.actions";
-import {FeedNewError} from 'vort_x';
+import {FeedNewError, getContract, Vortex} from 'vort_x';
+import {CsApiActionTypes, CsApiFetchedSoldTicketsInfos, CsApiFetchingSoldTicketInfos} from "../csapi/csapi.actions";
 
 function* wallet_updater() {
     const state = yield select();
@@ -55,6 +56,47 @@ function* wallet_fetch() {
     }
 }
 
+function* fetch_sold_infos_channel(action) {
+
+    const state = yield select();
+
+    return (eventChannel(emit => {
+
+        setTimeout(async () => {
+            const contract = getContract(state, 'Ticket721');
+            for (let idx = 0; idx < action.tickets.length; ++idx) {
+                emit(CsApiFetchingSoldTicketInfos(action.tickets[idx]));
+                const event = await contract.vortexMethods.fromEvent.call(action.tickets[idx]);
+                const event_contract = getContract(state, 'Ticket721Controller', event, true);
+                const price = await event_contract.vortexMethods.getTicketPrice.call(action.tickets[idx]);
+                const uri = await contract.vortexMethods.tokenURI.call(action.tickets[idx]);
+                const extracted_uri = uri.slice(28);
+                Vortex.get().fetchIPFSHash(extracted_uri);
+                emit(CsApiFetchedSoldTicketsInfos(action.tickets[idx], {ipfs: extracted_uri, price, eaddress: event}));
+            }
+            emit(END);
+        }, 100);
+
+        return () => {};
+    }));
+}
+
+function* fetch_sold_infos(action) {
+
+    const fetch_sold_infos_channel_var = yield call(fetch_sold_infos_channel, action);
+
+    try {
+        while (true) {
+            const event = yield take(fetch_sold_infos_channel_var);
+            yield put (event);
+        }
+    } finally {
+        fetch_sold_infos_channel_var.close();
+    }
+
+}
+
 export function* WalletSagas() {
     yield takeEvery(WalletActionTypes.WALLET_FETCH, wallet_fetch);
+    yield takeEvery(CsApiActionTypes.CSAPI_GOT_SOLD_TICKETS, fetch_sold_infos);
 }

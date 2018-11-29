@@ -18,11 +18,11 @@ class _FeedNotifications extends React.Component {
                     case 'NEW_ERROR':
                         notification.open({message: nextProps.feed[start_idx].error.when, description: nextProps.feed[start_idx].error.message});
                         break ;
-                    case 'NEW_CONTRACT':
-                        if ((nextProps.feed[start_idx].contract_name === 'Ticket721')
-                            || (nextProps.feed[start_idx].contract_name === 'Ticket721Public'))
-                            notification.open({message: nextProps.feed[start_idx].contract_name, description: "Loaded instance at " + nextProps.feed[start_idx].contract_address});
-                        break ;
+                    //case 'NEW_CONTRACT':
+                    //    if ((nextProps.feed[start_idx].contract_name === 'Ticket721')
+                    //        || (nextProps.feed[start_idx].contract_name === 'Ticket721Public'))
+                    //        notification.open({message: nextProps.feed[start_idx].contract_name, description: "Loaded instance at " + nextProps.feed[start_idx].contract_address});
+                    //    break ;
                     case 'NEW_TRANSACTION':
                         notification.open({message: 'New Transaction Broadcasted', description: nextProps.feed[start_idx].transaction_hash});
                         break ;

@@ -1,0 +1,27 @@
+.text_container {
+    text-align: center;
+}
+
+.text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.code_input {
+    margin: 10px;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+.status {
+    margin: 30px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.status_code {
+    margin: 30px;
+    font-family: 'Roboto Mono', monospace;
+}

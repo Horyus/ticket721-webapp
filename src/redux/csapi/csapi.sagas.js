@@ -2,7 +2,13 @@ import { call, put, select, takeEvery, take } from 'redux-saga/effects'
 import {eventChannel, END} from 'redux-saga';
 import {
     CsApiActionTypes,
-    CsApiConnected, CsApiFetchWalletsDone, CsApiGetInfos, CsApiGettingEvents, CsApiGotEvents, CsApiGotInfos,
+    CsApiConnected,
+    CsApiFetchWalletsDone,
+    CsApiGetInfos,
+    CsApiGettingEvents,
+    CsApiGotAddressFromCode,
+    CsApiGotEvents, CsApiGotHistory,
+    CsApiGotInfos, CsApiGotInvalidAddressFromCode, CsApiGotSoldTickets,
     CsApiLoaded,
     CsApiRegistered
 } from "./csapi.actions";
@@ -229,6 +235,107 @@ function* fetch_infos(action) {
     }
 }
 
+function* csapi_get_address(instance, code) {
+    return (eventChannel((emit) => {
+
+        instance.get_address_from_code(code).then(address => {
+            emit(CsApiGotAddressFromCode(code, address));
+            emit(END);
+        }).catch(e => {
+            emit(CsApiGotInvalidAddressFromCode(code));
+            emit(END);
+        });
+
+        return (() => {});
+    }));
+}
+
+function* call_get_address(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_addr = yield call(csapi_get_address, csapi.instance, action.code);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_addr);
+            yield put(event);
+        }
+    } finally {
+        call_get_addr.close();
+    }
+}
+
+function* call_get_ticket_history(instance, action) {
+
+    return eventChannel(emit => {
+        instance.get_ticket_history(action.id, action.verified)
+            .then(history => {
+                emit(CsApiGotHistory(action.id, history));
+                emit(END);
+            })
+            .catch(e => {
+                emit(CsApiGotHistory(action.id, []));
+                emit(END);
+            });
+
+        return (() => {});
+    });
+
+}
+
+function* call_get_history(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_ticket_hist = yield call(call_get_ticket_history, csapi.instance, action);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_ticket_hist);
+            yield put(event);
+        }
+    } finally {
+        call_get_ticket_hist.close();
+    }
+
+}
+
+function* call_get_sold_tickets_channel(instance, action) {
+
+    return eventChannel(emit => {
+        instance.get_sold_tickets(action.verified)
+            .then(tickets => {
+                emit(CsApiGotSoldTickets(tickets));
+                emit(END);
+            })
+            .catch(e => {
+                emit(CsApiGotSoldTickets([]));
+                emit(END);
+            });
+
+        return (() => {});
+    });
+
+}
+
+function* call_get_sold_tickets(action) {
+    const state = (yield select());
+    const csapi = state.csapi;
+
+    const call_get_ticket_hist = yield call(call_get_sold_tickets_channel, csapi.instance, action);
+
+    try {
+        while (true) {
+            const event = yield take(call_get_ticket_hist);
+            yield put(event);
+        }
+    } finally {
+        call_get_ticket_hist.close();
+    }
+
+}
+
 export function* CsApiSagas() {
     yield takeEvery('LOADED_WEB3_BACKLINK', on_init);
     yield takeEvery(CsApiActionTypes.CSAPI_LOADED, call_loaded);
@@ -238,4 +345,7 @@ export function* CsApiSagas() {
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_REGISTER, call_register);
     yield takeEvery(CsApiActionTypes.CSAPI_CALL_CONNECT, call_connect);
     yield takeEvery(CsApiActionTypes.CSAPI_CONNECTED, fetch_infos);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_ADDRESS_FROM_CODE, call_get_address);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_HISTORY, call_get_history);
+    yield takeEvery(CsApiActionTypes.CSAPI_GET_SOLD_TICKETS, call_get_sold_tickets);
 }
